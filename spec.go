@@ -5,6 +5,7 @@ import (
 	"github.com/kubernetes/client-go/dynamic"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 type Interface interface {
@@ -12,4 +13,5 @@ type Interface interface {
 	ExtClient() apiextensionsclient.Interface
 	G8sClient() versioned.Interface
 	K8sClient() kubernetes.Interface
+	RestConfig() *rest.Config
 }
