@@ -194,14 +194,6 @@
   revision = "b84e30acd515aadc4b783ad4ff83aff3299bdfe0"
 
 [[projects]]
-  digest = "1:f3db8f96a1fadc868b08d34648e021c3c4a8ae255e3c0d79d3212536e6e0d1f2"
-  name = "github.com/kubernetes/client-go"
-  packages = ["dynamic"]
-  pruneopts = "UT"
-  revision = "78d2af792babf2dd937ba2e2a8d99c753a5eda89"
-  version = "v12.0.0"
-
-[[projects]]
   digest = "1:33422d238f147d247752996a26574ac48dcf472976eda7f5134015f06bf16563"
   name = "github.com/modern-go/concurrent"
   packages = ["."]
@@ -451,10 +443,11 @@
   version = "kubernetes-1.13.1"
 
 [[projects]]
-  digest = "1:8d5e51e119546ab831ba781660edf2806356ea39fb47d62c6c016e514b8c8a2b"
+  digest = "1:5db0dc5b41bd2c0fa1c13eb2e2a980256df2f020592d7dc6c5d2bc5c6deec65a"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
+    "dynamic",
     "kubernetes",
     "kubernetes/scheme",
     "kubernetes/typed/admissionregistration/v1alpha1",
@@ -539,12 +532,12 @@
     "github.com/giantswarm/microerror",
     "github.com/giantswarm/micrologger",
     "github.com/giantswarm/operatorkit/client/k8scrdclient",
-    "github.com/kubernetes/client-go/dynamic",
     "k8s.io/api/core/v1",
     "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1",
     "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset",
     "k8s.io/apimachinery/pkg/api/errors",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
+    "k8s.io/client-go/dynamic",
     "k8s.io/client-go/kubernetes",
     "k8s.io/client-go/rest",
     "k8s.io/client-go/tools/clientcmd",
