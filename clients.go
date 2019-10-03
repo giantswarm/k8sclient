@@ -27,6 +27,7 @@ type Clients struct {
 	extClient  *apiextensionsclient.Clientset
 	g8sClient  *versioned.Clientset
 	k8sClient  *kubernetes.Clientset
+	restClient *rest.RESTClient
 	restConfig *rest.Config
 }
 
@@ -96,6 +97,16 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		}
 	}
 
+	var restClient *rest.RESTClient
+	{
+		c := rest.CopyConfig(restConfig)
+
+		restClient, err = rest.RESTClientFor(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	c := &Clients{
 		logger: config.Logger,
 
@@ -103,6 +114,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		extClient:  extClient,
 		g8sClient:  g8sClient,
 		k8sClient:  k8sClient,
+		restClient: restClient,
 		restConfig: restConfig,
 	}
 
@@ -125,6 +137,10 @@ func (c *Clients) K8sClient() kubernetes.Interface {
 	return c.k8sClient
 }
 
-func (c *Clients) RestConfig() *rest.Config {
+func (c *Clients) RESTClient() rest.Interface {
+	return c.restClient
+}
+
+func (c *Clients) RESTConfig() *rest.Config {
 	return rest.CopyConfig(c.restConfig)
 }
