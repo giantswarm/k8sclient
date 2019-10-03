@@ -27,7 +27,7 @@ type Clients struct {
 	extClient  *apiextensionsclient.Clientset
 	g8sClient  *versioned.Clientset
 	k8sClient  *kubernetes.Clientset
-	restClient *rest.RESTClient
+	restClient rest.Interface
 	restConfig *rest.Config
 }
 
@@ -97,7 +97,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		}
 	}
 
-	var restClient *rest.RESTClient
+	var restClient rest.Interface
 	{
 		// It would be cool to use rest.RESTClientFor here but it fails
 		// because GroupVersion is not configured. So underlying core
