@@ -43,10 +43,6 @@
   name = "github.com/giantswarm/micrologger"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/operatorkit"
-
-[[constraint]]
   name = "k8s.io/api"
   version = "kubernetes-1.15.4"
 
