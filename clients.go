@@ -18,6 +18,8 @@ import (
 )
 
 type ClientsConfig struct {
+	// AddToScheme is an optional way to extend the known types to the gobal
+	// client-go scheme. Make use of it for custom CRs.
 	AddToScheme func(*runtime.Scheme) error
 	Logger      micrologger.Logger
 
@@ -41,9 +43,6 @@ type Clients struct {
 }
 
 func NewClients(config ClientsConfig) (*Clients, error) {
-	if config.AddToScheme == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.AddToScheme must not be empty", config)
-	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
@@ -94,12 +93,14 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 
 	var ctrlClient client.Client
 	{
-		// Extend the global client-go scheme which is used by all the tools under
-		// the hood. The scheme is required for the controller-runtime controller to
-		// be able to watch for runtime objects of a certain type.
-		err = config.AddToScheme(scheme.Scheme)
-		if err != nil {
-			return nil, microerror.Mask(err)
+		if config.AddToScheme != nil {
+			// Extend the global client-go scheme which is used by all the tools under
+			// the hood. The scheme is required for the controller-runtime controller to
+			// be able to watch for runtime objects of a certain type.
+			err = config.AddToScheme(scheme.Scheme)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
 		}
 
 		// Configure a dynamic rest mapper to the controller client so it can work
