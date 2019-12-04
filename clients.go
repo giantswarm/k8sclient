@@ -21,7 +21,7 @@ type ClientsConfig struct {
 	Logger micrologger.Logger
 	// SchemeBuilder is an optional way to extend the known types to the global
 	// client-go scheme. Make use of it for custom CRs.
-	SchemeBuilder []func(*runtime.Scheme) error
+	SchemeBuilder SchemeBuilder
 
 	// KubeConfigPath and RestConfig are mutually exclusive.
 	KubeConfigPath string
