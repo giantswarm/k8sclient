@@ -97,7 +97,9 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 			// Extend the global client-go scheme which is used by all the tools under
 			// the hood. The scheme is required for the controller-runtime controller to
 			// be able to watch for runtime objects of a certain type.
-			err = runtime.SchemeBuilder(config.SchemeBuilder).AddToScheme(scheme.Scheme)
+			schemeBuilder := runtime.SchemeBuilder(config.SchemeBuilder)
+
+			err = schemeBuilder.AddToScheme(scheme.Scheme)
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
