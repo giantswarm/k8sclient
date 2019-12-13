@@ -17,9 +17,9 @@ type ClientsConfig struct {
 	CrdClient  k8scrdclient.Interface
 	CtrlClient client.Client
 	DynClient  dynamic.Interface
-	ExtClient  *apiextensionsclient.Clientset
-	G8sClient  *versioned.Clientset
-	K8sClient  *kubernetes.Clientset
+	ExtClient  apiextensionsclient.Interface
+	G8sClient  versioned.Interface
+	K8sClient  kubernetes.Interface
 	RestClient rest.Interface
 	RestConfig *rest.Config
 }
@@ -28,9 +28,9 @@ type Clients struct {
 	crdClient  k8scrdclient.Interface
 	ctrlClient client.Client
 	dynClient  dynamic.Interface
-	extClient  *apiextensionsclient.Clientset
-	g8sClient  *versioned.Clientset
-	k8sClient  *kubernetes.Clientset
+	extClient  apiextensionsclient.Interface
+	g8sClient  versioned.Interface
+	k8sClient  kubernetes.Interface
 	restClient rest.Interface
 	restConfig *rest.Config
 }
