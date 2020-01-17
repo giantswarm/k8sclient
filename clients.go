@@ -6,6 +6,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -34,6 +35,7 @@ type Clients struct {
 
 	crdClient  k8scrdclient.Interface
 	ctrlClient client.Client
+	discClient discovery.DiscoveryInterface
 	dynClient  dynamic.Interface
 	extClient  *apiextensionsclient.Clientset
 	g8sClient  *versioned.Clientset
@@ -123,6 +125,16 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		}
 	}
 
+	var discClient discovery.DiscoveryInterface
+	{
+		c := rest.CopyConfig(restConfig)
+
+		discClient, err = discovery.NewDiscoveryClientForConfig(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var dynClient dynamic.Interface
 	{
 		c := rest.CopyConfig(restConfig)
@@ -169,6 +181,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 
 		crdClient:  crdClient,
 		ctrlClient: ctrlClient,
+		discClient: discClient,
 		dynClient:  dynClient,
 		extClient:  extClient,
 		g8sClient:  g8sClient,
@@ -186,6 +199,10 @@ func (c *Clients) CRDClient() k8scrdclient.Interface {
 
 func (c *Clients) CtrlClient() client.Client {
 	return c.ctrlClient
+}
+
+func (c *Clients) DiscoveryClient() discovery.DiscoveryInterface {
+	return c.discClient
 }
 
 func (c *Clients) DynClient() dynamic.Interface {

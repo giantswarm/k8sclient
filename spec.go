@@ -4,6 +4,7 @@ import (
 	"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -15,6 +16,7 @@ import (
 type Interface interface {
 	CRDClient() k8scrdclient.Interface
 	CtrlClient() client.Client
+	DiscoveryClient() discovery.DiscoveryInterface
 	DynClient() dynamic.Interface
 	ExtClient() apiextensionsclient.Interface
 	G8sClient() versioned.Interface
