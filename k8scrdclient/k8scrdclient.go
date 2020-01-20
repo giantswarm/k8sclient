@@ -41,6 +41,43 @@ func New(config Config) (*CRDClient, error) {
 // EnsureCreated ensures the given CRD exists, is active (aka. established) and
 // does not have conflicting names.
 func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+	var err error
+
+	err = c.ensureCreated(ctx, crd, b)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	err = c.ensureStatusSubresourceCreated(ctx, crd, b)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
+}
+
+// EnsureDeleted ensures the given CRD does not exist.
+func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+	o := func() error {
+		err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Delete(crd.Name, nil)
+		if errors.IsNotFound(err) {
+			// Fall trough. We reached our goal.
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
+
+		return nil
+	}
+
+	err := backoff.Retry(o, b)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
+}
+
+func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
 	_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
 	if errors.IsAlreadyExists(err) {
 		// Fall trough. We need to check CRD status.
@@ -77,32 +114,6 @@ func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1beta1
 			return microerror.Mask(deleteErr)
 		}
 
-		return microerror.Mask(err)
-	}
-
-	err = c.ensureStatusSubresourceCreated(ctx, crd, b)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	return nil
-}
-
-// EnsureDeleted ensures the given CRD does not exist.
-func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
-	o := func() error {
-		err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Delete(crd.Name, nil)
-		if errors.IsNotFound(err) {
-			// Fall trough. We reached our goal.
-		} else if err != nil {
-			return microerror.Mask(err)
-		}
-
-		return nil
-	}
-
-	err := backoff.Retry(o, b)
-	if err != nil {
 		return microerror.Mask(err)
 	}
 
