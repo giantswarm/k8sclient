@@ -48,7 +48,7 @@ func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1beta1
 		return microerror.Mask(err)
 	}
 
-	err = c.ensureStatusSubresourceCreated(ctx, crd, b)
+	err = c.ensureUpdated(ctx, crd, b)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -120,23 +120,34 @@ func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1
 	return nil
 }
 
-// ensureStatusSubresourceCreated ensures if the CRD has a status subresource
-// it is created. This is needed if a previous version of the CRD without the
-// status subresource is present.
-func (c *CRDClient) ensureStatusSubresourceCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
-	if crd.Spec.Subresources == nil || crd.Spec.Subresources.Status == nil {
-		// Nothing to do.
-		return nil
-	}
-
+// ensureUpdated ensures if the CRD changed it is updated accordingly. This is
+// needed if e.g. a previous version of the CRD without the status subresource
+// is present where it should actually be set. Another example would be the CRD
+// apiversion changing, which tends to happen every now and then over the
+// runtime object lifecycle and community adoption.
+func (c *CRDClient) ensureUpdated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
 	o := func() error {
-		manifest, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
+		latest, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		if manifest.Spec.Subresources == nil || manifest.Spec.Subresources.Status == nil {
-			crd.SetResourceVersion(manifest.ResourceVersion)
+		var changed bool
+		{
+			if !crdAPIVersionEqual(crd, latest) {
+				changed = true
+			}
+			if !crdStatusEqual(crd, latest) {
+				changed = true
+			}
+			if !crdValidationEqual(crd, latest) {
+				changed = true
+			}
+		}
+
+		if changed {
+			crd.SetResourceVersion(latest.ResourceVersion)
+
 			_, err = c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Update(crd)
 			if err != nil {
 				return microerror.Mask(err)
@@ -152,4 +163,39 @@ func (c *CRDClient) ensureStatusSubresourceCreated(ctx context.Context, crd *api
 	}
 
 	return nil
+}
+
+func crdAPIVersionEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
+	if a != nil && b != nil && a.TypeMeta.APIVersion == b.TypeMeta.APIVersion {
+		return true
+	}
+
+	return false
+}
+
+func crdStatusEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
+	if a != nil && b != nil && a.Spec.Subresources == nil && b.Spec.Subresources == nil {
+		return true
+	}
+
+	if a != nil && b != nil &&
+		a.Spec.Subresources != nil && b.Spec.Subresources != nil &&
+		a.Spec.Subresources.Status != nil && b.Spec.Subresources.Status != nil &&
+		a.Spec.Subresources.Status.String() == b.Spec.Subresources.Status.String() {
+		return true
+	}
+
+	return false
+}
+
+func crdValidationEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
+	if a != nil && b != nil && a.Spec.Validation == nil && b.Spec.Validation == nil {
+		return true
+	}
+
+	if a != nil && b != nil && a.Spec.Validation != nil && b.Spec.Validation != nil && a.Spec.Validation.String() == b.Spec.Validation.String() {
+		return true
+	}
+
+	return false
 }
