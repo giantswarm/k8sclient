@@ -166,7 +166,15 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, crd *apiextensionsv1beta1
 }
 
 func crdAPIVersionEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
-	if a != nil && b != nil && a.TypeMeta.APIVersion == b.TypeMeta.APIVersion {
+	if a == nil && b == nil {
+		return true
+	}
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	if a.TypeMeta.APIVersion == b.TypeMeta.APIVersion {
 		return true
 	}
 
@@ -174,12 +182,19 @@ func crdAPIVersionEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) boo
 }
 
 func crdStatusEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
-	if a != nil && b != nil && a.Spec.Subresources == nil && b.Spec.Subresources == nil {
+	if a == nil && b == nil {
 		return true
 	}
 
-	if a != nil && b != nil &&
-		a.Spec.Subresources != nil && b.Spec.Subresources != nil &&
+	if a == nil || b == nil {
+		return false
+	}
+
+	if a.Spec.Subresources == nil && b.Spec.Subresources == nil {
+		return true
+	}
+
+	if a.Spec.Subresources != nil && b.Spec.Subresources != nil &&
 		a.Spec.Subresources.Status != nil && b.Spec.Subresources.Status != nil &&
 		a.Spec.Subresources.Status.String() == b.Spec.Subresources.Status.String() {
 		return true
@@ -189,11 +204,19 @@ func crdStatusEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
 }
 
 func crdValidationEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
-	if a != nil && b != nil && a.Spec.Validation == nil && b.Spec.Validation == nil {
+	if a == nil && b == nil {
 		return true
 	}
 
-	if a != nil && b != nil && a.Spec.Validation != nil && b.Spec.Validation != nil && a.Spec.Validation.String() == b.Spec.Validation.String() {
+	if a == nil || b == nil {
+		return false
+	}
+
+	if a.Spec.Validation == nil && b.Spec.Validation == nil {
+		return true
+	}
+
+	if a.Spec.Validation != nil && b.Spec.Validation != nil && a.Spec.Validation.String() == b.Spec.Validation.String() {
 		return true
 	}
 

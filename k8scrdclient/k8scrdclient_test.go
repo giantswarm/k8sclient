@@ -22,13 +22,19 @@ func Test_crdAPIVersionEqual(t *testing.T) {
 			equal: false,
 		},
 		{
-			name:   "case 1 both the same yields true",
+			name:   "case 1 both nil yields true",
+			crd:    nil,
+			latest: nil,
+			equal:  true,
+		},
+		{
+			name:   "case 2 both the same yields true",
 			crd:    &apiextensionsv1beta1.CustomResourceDefinition{},
 			latest: &apiextensionsv1beta1.CustomResourceDefinition{},
 			equal:  true,
 		},
 		{
-			name: "case 2 different apiversions yields false",
+			name: "case 3 different apiversions yields false",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				TypeMeta: metav1.TypeMeta{
 					APIVersion: "a",
@@ -42,7 +48,7 @@ func Test_crdAPIVersionEqual(t *testing.T) {
 			equal: false,
 		},
 		{
-			name: "case 3 same apiversions yields true",
+			name: "case 4 same apiversions yields true",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				TypeMeta: metav1.TypeMeta{
 					APIVersion: "a",
@@ -56,7 +62,7 @@ func Test_crdAPIVersionEqual(t *testing.T) {
 			equal: true,
 		},
 		{
-			name: "case 4 same apiversions but different names yields true",
+			name: "case 5 same apiversions but different names yields true",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "a",
@@ -101,13 +107,19 @@ func Test_crdStatusEqual(t *testing.T) {
 			equal: false,
 		},
 		{
-			name:   "case 1 both the same yields true",
+			name:   "case 1 both nil yields true",
+			crd:    nil,
+			latest: nil,
+			equal:  true,
+		},
+		{
+			name:   "case 2 both the same yields true",
 			crd:    &apiextensionsv1beta1.CustomResourceDefinition{},
 			latest: &apiextensionsv1beta1.CustomResourceDefinition{},
 			equal:  true,
 		},
 		{
-			name: "case 2 one nil the other not nil yields false",
+			name: "case 3 one nil the other not nil yields false",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
 					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
@@ -125,7 +137,7 @@ func Test_crdStatusEqual(t *testing.T) {
 			equal: false,
 		},
 		{
-			name: "case 3 same statuses yields true",
+			name: "case 4 same statuses yields true",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
 					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
@@ -143,7 +155,7 @@ func Test_crdStatusEqual(t *testing.T) {
 			equal: true,
 		},
 		{
-			name: "case 4 same statuses but different names yields true",
+			name: "case 5 same statuses but different names yields true",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "a",
@@ -192,13 +204,19 @@ func Test_crdValidationEqual(t *testing.T) {
 			equal: false,
 		},
 		{
-			name:   "case 1 both the same yields true",
+			name:   "case 1 both nil yields true",
+			crd:    nil,
+			latest: nil,
+			equal:  true,
+		},
+		{
+			name:   "case 2 both the same yields true",
 			crd:    &apiextensionsv1beta1.CustomResourceDefinition{},
 			latest: &apiextensionsv1beta1.CustomResourceDefinition{},
 			equal:  true,
 		},
 		{
-			name: "case 2 one nil the other not nil yields false",
+			name: "case 3 one nil the other not nil yields false",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
 					Validation: &apiextensionsv1beta1.CustomResourceValidation{
@@ -216,7 +234,7 @@ func Test_crdValidationEqual(t *testing.T) {
 			equal: false,
 		},
 		{
-			name: "case 3 same statuses yields true",
+			name: "case 4 same statuses yields true",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
 					Validation: &apiextensionsv1beta1.CustomResourceValidation{
@@ -234,7 +252,7 @@ func Test_crdValidationEqual(t *testing.T) {
 			equal: true,
 		},
 		{
-			name: "case 4 same statuses but different names yields true",
+			name: "case 5 same statuses but different names yields true",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "a",
@@ -258,7 +276,7 @@ func Test_crdValidationEqual(t *testing.T) {
 			equal: true,
 		},
 		{
-			name: "case 5 different statuses yields false",
+			name: "case 6 different statuses yields false",
 			crd: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
 					Validation: &apiextensionsv1beta1.CustomResourceValidation{
