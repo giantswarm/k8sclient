@@ -4,7 +4,7 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-var nameConflictError = &microerror.Error{
+var nameConflictError = microerror.Error{
 	Kind: "nameConflictError",
 }
 
@@ -13,7 +13,7 @@ func IsNameConflict(err error) bool {
 	return microerror.Cause(err) == nameConflictError
 }
 
-var notEstablishedError = &microerror.Error{
+var notEstablishedError = microerror.Error{
 	Kind: "notEstablishedError",
 }
 
@@ -22,7 +22,7 @@ func IsNotEstablished(err error) bool {
 	return microerror.Cause(err) == notEstablishedError
 }
 
-var invalidConfigError = &microerror.Error{
+var invalidConfigError = microerror.Error{
 	Kind: "invalidConfigError",
 }
 
