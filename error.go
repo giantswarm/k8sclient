@@ -2,7 +2,7 @@ package k8sclient
 
 import "github.com/giantswarm/microerror"
 
-var invalidConfigError = microerror.Error{
+var invalidConfigError = &microerror.Error{
 	Kind: "invalidConfigError",
 }
 
@@ -11,7 +11,7 @@ func IsInvalidConfig(err error) bool {
 	return microerror.Cause(err) == invalidConfigError
 }
 
-var unexpectedStatusPhaseError = microerror.Error{
+var unexpectedStatusPhaseError = &microerror.Error{
 	Kind: "unexpectedStatusPhaseError",
 }
 

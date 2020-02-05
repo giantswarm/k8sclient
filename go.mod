@@ -7,7 +7,7 @@ require (
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32 // indirect
 	github.com/giantswarm/apiextensions v0.0.0-20191209114846-a4fd7939e26e
 	github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192
-	github.com/giantswarm/microerror v0.1.1-0.20200204123133-8f12df8fee02
+	github.com/giantswarm/microerror v0.1.1-0.20200205143715-01b76f66cae6
 	github.com/giantswarm/micrologger v0.0.0-20200204125826-7578dee0008d
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
