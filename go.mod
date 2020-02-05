@@ -8,7 +8,7 @@ require (
 	github.com/giantswarm/apiextensions v0.0.0-20191209114846-a4fd7939e26e
 	github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192
 	github.com/giantswarm/microerror v0.1.1-0.20200205143715-01b76f66cae6
-	github.com/giantswarm/micrologger v0.0.0-20200204125826-7578dee0008d
+	github.com/giantswarm/micrologger v0.0.0-20200205144836-079154bcae45
 	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
