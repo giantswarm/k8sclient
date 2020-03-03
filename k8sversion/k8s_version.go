@@ -81,9 +81,9 @@ func Latest(versions []string) (string, error) {
 	return pairs[len(pairs)-1].k8s, nil
 }
 
-// Mess returns true if a is less/older that b, where a and b are Kubernetes API
-// Versions. Given v1 and v2alpha3 then v1 is returns as it is the semantically
-// older version.
+// Less returns true if a is less/older that b, where a and b are Kubernetes API
+// Versions. Given v1 and v2alpha3 then v1 is returned since it is the
+// semantically older version.
 func Less(a string, b string) (bool, error) {
 	if a == b {
 		return false, nil

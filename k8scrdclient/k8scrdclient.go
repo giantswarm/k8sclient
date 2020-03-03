@@ -167,6 +167,9 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1b
 // is operator-1 being aware of apiversion v1. In turn operator-2 knows about
 // apiversion v1 and v2, where v1 must be the exact same version as operator-1
 // defined already in order to keep the CRD schema version lifecycle in tact.
+// Note that in the example below o1 must not run anymore in cae o3 drops its
+// support. There is some orchestration involved the system's maintainers have
+// to get right.
 //
 //         o1    |     o2     |    o3
 //     ---------------------------------
