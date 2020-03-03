@@ -10,6 +10,8 @@ import (
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/k8sclient/k8sversion"
 )
 
 type Config struct {
@@ -125,30 +127,21 @@ func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1
 // is present where it should actually be set. Another example would be the CRD
 // apiversion changing, which tends to happen every now and then over the
 // runtime object lifecycle and community adoption.
-func (c *CRDClient) ensureUpdated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
 	o := func() error {
-		latest, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
+		current, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(desired.Name, metav1.GetOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		var changed bool
-		{
-			if !crdAPIVersionEqual(crd, latest) {
-				changed = true
-			}
-			if !crdStatusEqual(crd, latest) {
-				changed = true
-			}
-			if !crdValidationEqual(crd, latest) {
-				changed = true
-			}
+		latest, err := crdVersionLatest(desired, current)
+		if err != nil {
+			return microerror.Mask(err)
 		}
+		if latest {
+			desired.SetResourceVersion(current.ResourceVersion)
 
-		if changed {
-			crd.SetResourceVersion(latest.ResourceVersion)
-
-			_, err = c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Update(crd)
+			_, err = c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Update(desired)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -165,60 +158,89 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, crd *apiextensionsv1beta1
 	return nil
 }
 
-func crdAPIVersionEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
-	if a == nil && b == nil {
-		return true
+// crdVersionLatest returns true when the desired version of the given CRD
+// represents the latest version of them all. In case the current version of the
+// given CRD which we just read from the system appears to be newer, this means
+// another version of the same operator updated the CRD to its own version,
+// because it was in fact the latest version. Consider the following
+// relationships between operators and CRD versions they are aware of. Below o1
+// is operator-1 being aware of apiversion v1. In turn operator-2 knows about
+// apiversion v1 and v2, where v1 must be the exact same version as operator-1
+// defined already in order to keep the CRD schema version lifecycle in tact.
+//
+//         o1    |     o2     |    o3
+//     ---------------------------------
+//         v1    |   v1, v2   |   v2, v3
+//
+// Each operator compares the latest version it finds in desired and current. If
+// the latest version of desired is below the latest version of current, the
+// desired version of the given CRD is not considered to be the latest known
+// version and thus not allowed to update the system's CRD.
+//
+// Note that the given versions must be in the format of usual Kubernetes
+// APIVersions, e.g. v1alpha1, v2beta5, v2.
+//
+//     https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-versioning
+//
+func crdVersionLatest(desired *apiextensionsv1beta1.CustomResourceDefinition, current *apiextensionsv1beta1.CustomResourceDefinition) (bool, error) {
+	desiredVersions := crdVersions(desired)
+	currentVersions := crdVersions(current)
+
+	// In case there are no versions given at all, we do not want to do anything.
+	if len(desiredVersions) == 0 && len(currentVersions) == 0 {
+		return false, nil
+	}
+	// In case there are only current versions given, we do not want to overwrite
+	// them.
+	if len(desiredVersions) == 0 && len(currentVersions) != 0 {
+		return false, nil
+	}
+	// In case there are only desired versions given, we want to update to them.
+	if len(desiredVersions) != 0 && len(currentVersions) == 0 {
+		return true, nil
 	}
 
-	if a == nil || b == nil {
-		return false
+	// All code below handles the situation in which both desired and current
+	// versions are given. In this case we need to figure out if desired or
+	// current contains the latest version.
+
+	desiredLatest, err := k8sversion.Latest(desiredVersions)
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+	currentLatest, err := k8sversion.Latest(crdVersions(current))
+	if err != nil {
+		return false, microerror.Mask(err)
 	}
 
-	if a.TypeMeta.APIVersion == b.TypeMeta.APIVersion {
-		return true
+	less, err := k8sversion.Less(desiredLatest, currentLatest)
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+	if less {
+		return false, nil
 	}
 
-	return false
+	return true, nil
 }
 
-func crdStatusEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
-	if a == nil && b == nil {
-		return true
+func crdVersions(crd *apiextensionsv1beta1.CustomResourceDefinition) []string {
+	var versions []string
+
+	if crd == nil {
+		return versions
 	}
 
-	if a == nil || b == nil {
-		return false
+	// Due to legacy reasons the single CRD version may still be given. Since this
+	// field is already deprecated in favour of the crd.Spec.Versions list this
+	// bit of code below may be dropped at some point in the future.
+	if crd.Spec.Version != "" {
+		versions = append(versions, crd.Spec.Version)
 	}
 
-	if a.Spec.Subresources == nil && b.Spec.Subresources == nil {
-		return true
+	for _, v := range crd.Spec.Versions {
+		versions = append(versions, v.Name)
 	}
 
-	if a.Spec.Subresources != nil && b.Spec.Subresources != nil &&
-		a.Spec.Subresources.Status != nil && b.Spec.Subresources.Status != nil &&
-		a.Spec.Subresources.Status.String() == b.Spec.Subresources.Status.String() {
-		return true
-	}
-
-	return false
-}
-
-func crdValidationEqual(a, b *apiextensionsv1beta1.CustomResourceDefinition) bool {
-	if a == nil && b == nil {
-		return true
-	}
-
-	if a == nil || b == nil {
-		return false
-	}
-
-	if a.Spec.Validation == nil && b.Spec.Validation == nil {
-		return true
-	}
-
-	if a.Spec.Validation != nil && b.Spec.Validation != nil && a.Spec.Validation.String() == b.Spec.Validation.String() {
-		return true
-	}
-
-	return false
+	return versions
 }

@@ -6,313 +6,188 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func Test_crdAPIVersionEqual(t *testing.T) {
+func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 	testCases := []struct {
-		name   string
-		crd    *apiextensionsv1beta1.CustomResourceDefinition
-		latest *apiextensionsv1beta1.CustomResourceDefinition
-		equal  bool
+		name    string
+		desired *apiextensionsv1beta1.CustomResourceDefinition
+		current *apiextensionsv1beta1.CustomResourceDefinition
+		latest  bool
 	}{
 		{
-			name:  "case 0 only one crd given yields false",
-			crd:   &apiextensionsv1beta1.CustomResourceDefinition{},
-			equal: false,
+			name:    "case 0",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{},
+			current: &apiextensionsv1beta1.CustomResourceDefinition{},
+			latest:  false,
 		},
 		{
-			name:   "case 1 both nil yields true",
-			crd:    nil,
-			latest: nil,
-			equal:  true,
+			name:    "case 1",
+			desired: nil,
+			current: nil,
+			latest:  false,
 		},
 		{
-			name:   "case 2 both the same yields true",
-			crd:    &apiextensionsv1beta1.CustomResourceDefinition{},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{},
-			equal:  true,
-		},
-		{
-			name: "case 3 different apiversions yields false",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
-				TypeMeta: metav1.TypeMeta{
-					APIVersion: "a",
-				},
-			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
-				TypeMeta: metav1.TypeMeta{
-					APIVersion: "b",
-				},
-			},
-			equal: false,
-		},
-		{
-			name: "case 4 same apiversions yields true",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
-				TypeMeta: metav1.TypeMeta{
-					APIVersion: "a",
-				},
-			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
-				TypeMeta: metav1.TypeMeta{
-					APIVersion: "a",
-				},
-			},
-			equal: true,
-		},
-		{
-			name: "case 5 same apiversions but different names yields true",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: "a",
-				},
-				TypeMeta: metav1.TypeMeta{
-					APIVersion: "a",
-				},
-			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: "b",
-				},
-				TypeMeta: metav1.TypeMeta{
-					APIVersion: "a",
-				},
-			},
-			equal: true,
-		},
-	}
-
-	for i, tc := range testCases {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			equal := crdAPIVersionEqual(tc.crd, tc.latest)
-
-			if !cmp.Equal(equal, tc.equal) {
-				t.Fatalf("\n\n%s\n", cmp.Diff(tc.equal, equal))
-			}
-		})
-	}
-}
-
-func Test_crdStatusEqual(t *testing.T) {
-	testCases := []struct {
-		name   string
-		crd    *apiextensionsv1beta1.CustomResourceDefinition
-		latest *apiextensionsv1beta1.CustomResourceDefinition
-		equal  bool
-	}{
-		{
-			name:  "case 0 only one crd given yields false",
-			crd:   &apiextensionsv1beta1.CustomResourceDefinition{},
-			equal: false,
-		},
-		{
-			name:   "case 1 both nil yields true",
-			crd:    nil,
-			latest: nil,
-			equal:  true,
-		},
-		{
-			name:   "case 2 both the same yields true",
-			crd:    &apiextensionsv1beta1.CustomResourceDefinition{},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{},
-			equal:  true,
-		},
-		{
-			name: "case 3 one nil the other not nil yields false",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
+			name: "case 2",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
-						Status: &apiextensionsv1beta1.CustomResourceSubresourceStatus{},
-					},
+					Version: "v1alpha1",
 				},
 			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
+			current: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
-						Status: nil,
-					},
+					Version: "v1alpha1",
 				},
 			},
-			equal: false,
+			latest: true,
 		},
 		{
-			name: "case 4 same statuses yields true",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
+			name: "case 3",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
-						Status: &apiextensionsv1beta1.CustomResourceSubresourceStatus{},
-					},
+					Version: "",
 				},
 			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
+			current: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
-						Status: &apiextensionsv1beta1.CustomResourceSubresourceStatus{},
-					},
+					Version: "v1alpha1",
 				},
 			},
-			equal: true,
+			latest: false,
 		},
 		{
-			name: "case 5 same statuses but different names yields true",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: "a",
-				},
+			name: "case 4",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
-						Status: &apiextensionsv1beta1.CustomResourceSubresourceStatus{},
-					},
+					Version: "v1alpha1",
 				},
 			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: "b",
-				},
+			current: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
-						Status: &apiextensionsv1beta1.CustomResourceSubresourceStatus{},
-					},
+					Version: "",
 				},
 			},
-			equal: true,
-		},
-	}
-
-	for i, tc := range testCases {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			equal := crdStatusEqual(tc.crd, tc.latest)
-
-			if !cmp.Equal(equal, tc.equal) {
-				t.Fatalf("\n\n%s\n", cmp.Diff(tc.equal, equal))
-			}
-		})
-	}
-}
-
-func Test_crdValidationEqual(t *testing.T) {
-	testCases := []struct {
-		name   string
-		crd    *apiextensionsv1beta1.CustomResourceDefinition
-		latest *apiextensionsv1beta1.CustomResourceDefinition
-		equal  bool
-	}{
-		{
-			name:  "case 0 only one crd given yields false",
-			crd:   &apiextensionsv1beta1.CustomResourceDefinition{},
-			equal: false,
+			latest: true,
 		},
 		{
-			name:   "case 1 both nil yields true",
-			crd:    nil,
-			latest: nil,
-			equal:  true,
-		},
-		{
-			name:   "case 2 both the same yields true",
-			crd:    &apiextensionsv1beta1.CustomResourceDefinition{},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{},
-			equal:  true,
-		},
-		{
-			name: "case 3 one nil the other not nil yields false",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
+			name: "case 5",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: &apiextensionsv1beta1.JSONSchemaProps{},
-					},
+					Version: "v1alpha1",
 				},
 			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
+			current: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: nil,
-					},
-				},
-			},
-			equal: false,
-		},
-		{
-			name: "case 4 same statuses yields true",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: &apiextensionsv1beta1.JSONSchemaProps{},
-					},
-				},
-			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: &apiextensionsv1beta1.JSONSchemaProps{},
-					},
-				},
-			},
-			equal: true,
-		},
-		{
-			name: "case 5 same statuses but different names yields true",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: "a",
-				},
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: &apiextensionsv1beta1.JSONSchemaProps{},
-					},
-				},
-			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: "b",
-				},
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: &apiextensionsv1beta1.JSONSchemaProps{},
-					},
-				},
-			},
-			equal: true,
-		},
-		{
-			name: "case 6 different statuses yields false",
-			crd: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: &apiextensionsv1beta1.JSONSchemaProps{
-							Properties: map[string]apiextensionsv1beta1.JSONSchemaProps{
-								"a": apiextensionsv1beta1.JSONSchemaProps{
-									Pattern: "a",
-								},
-							},
+					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+						{
+							Name: "v1alpha2",
 						},
 					},
 				},
 			},
-			latest: &apiextensionsv1beta1.CustomResourceDefinition{
+			latest: false,
+		},
+		{
+			name: "case 6",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{
 				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Validation: &apiextensionsv1beta1.CustomResourceValidation{
-						OpenAPIV3Schema: &apiextensionsv1beta1.JSONSchemaProps{
-							Properties: map[string]apiextensionsv1beta1.JSONSchemaProps{
-								"b": apiextensionsv1beta1.JSONSchemaProps{
-									Pattern: "b",
-								},
-							},
+					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+						{
+							Name: "v1alpha2",
 						},
 					},
 				},
 			},
-			equal: false,
+			current: &apiextensionsv1beta1.CustomResourceDefinition{
+				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+						{
+							Name: "v1alpha2",
+						},
+					},
+				},
+			},
+			latest: true,
+		},
+		{
+			name: "case 7",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{
+				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha2",
+						},
+						{
+							Name: "v1alpha3",
+						},
+					},
+				},
+			},
+			current: &apiextensionsv1beta1.CustomResourceDefinition{
+				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+						{
+							Name: "v1alpha2",
+						},
+					},
+				},
+			},
+			latest: true,
+		},
+		{
+			name: "case 8",
+			desired: &apiextensionsv1beta1.CustomResourceDefinition{
+				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+						{
+							Name: "v1alpha2",
+						},
+					},
+				},
+			},
+			current: &apiextensionsv1beta1.CustomResourceDefinition{
+				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+						{
+							Name: "v1alpha2",
+						},
+						{
+							Name: "v1alpha3",
+						},
+					},
+				},
+			},
+			latest: false,
 		},
 	}
 
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			equal := crdValidationEqual(tc.crd, tc.latest)
+			latest, err := crdVersionLatest(tc.desired, tc.current)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-			if !cmp.Equal(equal, tc.equal) {
-				t.Fatalf("\n\n%s\n", cmp.Diff(tc.equal, equal))
+			if !cmp.Equal(latest, tc.latest) {
+				t.Fatalf("\n\n%s\n", cmp.Diff(tc.latest, latest))
 			}
 		})
 	}
