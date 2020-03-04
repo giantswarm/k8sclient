@@ -2,6 +2,7 @@ package k8scrdclient
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
@@ -80,11 +81,21 @@ func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1beta1
 }
 
 func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
-	_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
-	if errors.IsAlreadyExists(err) {
-		// Fall trough. We need to check CRD status.
-	} else if err != nil {
-		return microerror.Mask(err)
+	var err error
+
+	{
+		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating CRD %#q", crd.Name))
+
+		_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
+		if errors.IsAlreadyExists(err) {
+			// Fall through. We need to check CRD status.
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("not creating CRD %#q", crd.Name))
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("CRD %#q already created", crd.Name))
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
+
+		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("created CRD %#q", crd.Name))
 	}
 
 	o := func() error {
@@ -141,12 +152,19 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1b
 		}
 
 		if latest && !equal {
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("updating CRD %#q", desired.Name))
+
 			desired.SetResourceVersion(current.ResourceVersion)
 
 			_, err = c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Update(desired)
 			if err != nil {
 				return microerror.Mask(err)
 			}
+
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("updated CRD %#q", desired.Name))
+		} else {
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("not updating CRD %#q", desired.Name))
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("CRD %#q already updated", desired.Name))
 		}
 
 		return nil
