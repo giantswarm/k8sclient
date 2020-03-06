@@ -73,15 +73,15 @@
   version = "v0.1.0"
 
 [[projects]]
-  digest = "1:2275349e37657984a6cfc425803962b3f46843532b37b7a4552c5356086dffc6"
+  digest = "1:20fe82d087077d505e906c36177da3edb09897430812a437adb1dac497dc4371"
   name = "github.com/giantswarm/micrologger"
   packages = [
     ".",
     "loggermeta",
   ]
   pruneopts = "UT"
-  revision = "c87486c7d20d7878ad57a09d379d7d59328b472e"
-  version = "v0.1.0"
+  revision = "c4d217562e3d493e3ff571707346a5a2653475cb"
+  version = "v0.1.1"
 
 [[projects]]
   digest = "1:0cfcded8689c2c964c223650009c5dd9e283c22d57f18f2335aafa16cc22acf1"
