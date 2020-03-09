@@ -27,11 +27,11 @@ func Test_K8sVersion_Latest(t *testing.T) {
 		{
 			name: "case 1",
 			versions: []string{
-				"v1alpha1",
+				"v2alpha1",
 				"v1beta1",
 				"v1alpha2",
 			},
-			latest:       "v1beta1",
+			latest:       "v2alpha1",
 			errorMatcher: nil,
 		},
 		{
