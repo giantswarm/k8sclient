@@ -88,6 +88,16 @@ func Test_K8sVersion_Latest(t *testing.T) {
 			latest:       "",
 			errorMatcher: IsInvalidKubeVersion,
 		},
+		{
+			name: "case 8",
+			versions: []string{
+				"v2alpha1",
+				"v1beta1",
+				"v1alpha2",
+			},
+			latest:       "v2alpha1",
+			errorMatcher: nil,
+		},
 	}
 
 	for i, tc := range testCases {
