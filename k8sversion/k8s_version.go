@@ -17,7 +17,7 @@ const (
 	versionTypeGA
 )
 
-var kubeVersionRegex = regexp.MustCompile("^v([\\d]+)(?:(alpha|beta)([\\d]+))?$")
+var kubeVersionRegex = regexp.MustCompile(`^v([\d]+)(?:(alpha|beta)([\d]+))?$`)
 
 type pair struct {
 	k8s   string
@@ -69,7 +69,7 @@ func Latest(versions []string) (string, error) {
 
 		if pi.patch < pj.patch {
 			return true
-		} else if pi.patch < pj.patch {
+		} else if pi.patch > pj.patch {
 			return false
 		}
 
