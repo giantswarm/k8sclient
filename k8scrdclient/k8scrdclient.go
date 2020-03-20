@@ -46,7 +46,7 @@ func New(config Config) (*CRDClient, error) {
 func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
 	var err error
 
-	err = c.ensureCreated(ctx, crd, b)
+	err = c.ensureCreated(ctx, crd)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -56,7 +56,7 @@ func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1beta1
 		return microerror.Mask(err)
 	}
 
-	err = c.validateStatus(ctx, crd, b)
+	err = c.validateStatus(crd, b)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -85,7 +85,7 @@ func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1beta1
 	return nil
 }
 
-func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition) error {
 	c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating CRD %#q", crd.Name))
 
 	_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
@@ -151,7 +151,7 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1b
 	return nil
 }
 
-func (c *CRDClient) validateStatus(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) validateStatus(crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
 	var err error
 
 	o := func() error {
