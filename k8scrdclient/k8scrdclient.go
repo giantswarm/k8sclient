@@ -3,6 +3,7 @@ package k8scrdclient
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
@@ -153,6 +154,27 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1b
 
 func (c *CRDClient) validateStatus(crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
 	var err error
+
+	version, err := c.k8sExtClient.Discovery().ServerVersion()
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	major, err := strconv.Atoi(version.Major)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	minor, err := strconv.Atoi(version.Minor)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	if major < 2 && minor < 16 {
+		c.logger.Log("level", "debug", "message", fmt.Sprintf("current k8s version %#q is lower than 1.16.", version.String()))
+		c.logger.Log("level", "debug", "message", "skipping validation")
+
+		return nil
+	}
 
 	o := func() error {
 		manifest, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
