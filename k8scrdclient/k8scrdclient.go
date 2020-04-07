@@ -86,18 +86,34 @@ func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1beta1
 }
 
 func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition) error {
-	c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating CRD %#q", crd.Name))
+	// We explicitly check for the existence of the CRD by fetching it to
+	// workaround nasty side effects with error handling of multiple creation
+	// attempts. It may happen that a CRD creation is forbidden while it exists
+	// and actually has to be updated.
+	{
+		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("finding CRD %#q", crd.Name))
 
-	_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
-	if errors.IsAlreadyExists(err) {
-		// Fall through. We need to check CRD status.
-		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("not creating CRD %#q", crd.Name))
-		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("CRD %#q already created", crd.Name))
-	} else if err != nil {
-		return microerror.Mask(err)
+		_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
+		if errors.IsNotFound(err) {
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("did not find CRD %#q", crd.Name))
+		} else if err != nil {
+			return microerror.Mask(err)
+		} else {
+			c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("found CRD %#q", crd.Name))
+			return nil
+		}
 	}
 
-	c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("created CRD %#q", crd.Name))
+	{
+		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating CRD %#q", crd.Name))
+
+		_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("created CRD %#q", crd.Name))
+	}
 
 	return nil
 }
