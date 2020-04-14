@@ -9,7 +9,7 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/k8sclient/v2/pkg/k8scrdclient"
+	"github.com/giantswarm/k8sclient/v3/pkg/k8scrdclient"
 )
 
 type Interface interface {
