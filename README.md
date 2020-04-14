@@ -2,7 +2,6 @@
 
 # k8sclient
 
-k8sclient provides a set of clients for interacting with Kubernetes resources.
-
-* pods, services, nodes, etc.
-* CRDs, CRs
+`k8sclient` provides a set of clients for interacting with Kubernetes resources.
+This unclides all Kubernetes runtime objects such as Pods, Services and Nodes as
+well as CRDs and CRs.
