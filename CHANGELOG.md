@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Prepare project structure for `v1.0.0` by having all go code in `pkg/`.
+- Prepare project structure for `v1.0.0` by having all go code in `pkg/k8sclient/`.
 - Use architect orb `v0.8.9`.
 
 
