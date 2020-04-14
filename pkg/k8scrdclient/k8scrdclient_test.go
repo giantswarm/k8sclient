@@ -5,20 +5,20 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )
 
 func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 	testCases := []struct {
 		name    string
-		desired *apiextensionsv1beta1.CustomResourceDefinition
-		current *apiextensionsv1beta1.CustomResourceDefinition
+		desired *apiextensionsv1.CustomResourceDefinition
+		current *apiextensionsv1.CustomResourceDefinition
 		latest  bool
 	}{
 		{
 			name:    "case 0",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{},
+			desired: &apiextensionsv1.CustomResourceDefinition{},
+			current: &apiextensionsv1.CustomResourceDefinition{},
 			latest:  false,
 		},
 		{
@@ -29,56 +29,84 @@ func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 		},
 		{
 			name: "case 2",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Version: "v1alpha1",
+			desired: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+					},
 				},
 			},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Version: "v1alpha1",
+			current: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+					},
 				},
 			},
 			latest: true,
 		},
 		{
 			name: "case 3",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Version: "",
+			desired: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+					},
 				},
 			},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Version: "v1alpha1",
+			current: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha2",
+						},
+					},
 				},
 			},
 			latest: false,
 		},
 		{
 			name: "case 4",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Version: "v1alpha1",
+			desired: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha2",
+						},
+					},
 				},
 			},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Version: "",
+			current: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+					},
 				},
 			},
 			latest: true,
 		},
 		{
 			name: "case 5",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Version: "v1alpha1",
+			desired: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
+						{
+							Name: "v1alpha1",
+						},
+					},
 				},
 			},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+			current: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
 						{
 							Name: "v1alpha1",
 						},
@@ -92,9 +120,9 @@ func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 		},
 		{
 			name: "case 6",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+			desired: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
 						{
 							Name: "v1alpha1",
 						},
@@ -104,9 +132,9 @@ func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 					},
 				},
 			},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+			current: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
 						{
 							Name: "v1alpha1",
 						},
@@ -120,9 +148,9 @@ func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 		},
 		{
 			name: "case 7",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+			desired: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
 						{
 							Name: "v1alpha2",
 						},
@@ -132,9 +160,9 @@ func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 					},
 				},
 			},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+			current: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
 						{
 							Name: "v1alpha1",
 						},
@@ -148,9 +176,9 @@ func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 		},
 		{
 			name: "case 8",
-			desired: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+			desired: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
 						{
 							Name: "v1alpha1",
 						},
@@ -160,9 +188,9 @@ func Test_K8sCRDClient_crdVersionLatest(t *testing.T) {
 					},
 				},
 			},
-			current: &apiextensionsv1beta1.CustomResourceDefinition{
-				Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
-					Versions: []apiextensionsv1beta1.CustomResourceDefinitionVersion{
+			current: &apiextensionsv1.CustomResourceDefinition{
+				Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+					Versions: []apiextensionsv1.CustomResourceDefinitionVersion{
 						{
 							Name: "v1alpha1",
 						},

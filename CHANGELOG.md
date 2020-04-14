@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Graduate CRD Client to `apiextensions/v1`.
+
 
 
 ## [2.0.0] 2020-04-14
