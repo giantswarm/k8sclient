@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/k8sclient/pkg/k8scrdclient"
+	"github.com/giantswarm/k8sclient/v1/pkg/k8scrdclient"
 )
 
 type ClientsConfig struct {
