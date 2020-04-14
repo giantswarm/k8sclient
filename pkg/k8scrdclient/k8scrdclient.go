@@ -7,7 +7,7 @@ import (
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -43,7 +43,7 @@ func New(config Config) (*CRDClient, error) {
 
 // EnsureCreated ensures the given CRD exists, is active (aka. established) and
 // does not have conflicting names.
-func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
 	var err error
 
 	err = c.ensureCreated(ctx, crd)
@@ -65,9 +65,9 @@ func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1beta1
 }
 
 // EnsureDeleted ensures the given CRD does not exist.
-func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
 	o := func() error {
-		err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Delete(crd.Name, nil)
+		err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Delete(crd.Name, nil)
 		if errors.IsNotFound(err) {
 			// Fall trough. We reached our goal.
 		} else if err != nil {
@@ -85,10 +85,10 @@ func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1beta1
 	return nil
 }
 
-func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1.CustomResourceDefinition) error {
+func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition) error {
 	c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating CRD %#q", crd.Name))
 
-	_, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
+	_, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Create(crd)
 	if errors.IsAlreadyExists(err) {
 		// Fall through. We need to check CRD status.
 		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("not creating CRD %#q", crd.Name))
@@ -107,9 +107,9 @@ func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1beta1
 // is present where it should actually be set. Another example would be the CRD
 // apiversion changing, which tends to happen every now and then over the
 // runtime object lifecycle and community adoption.
-func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
 	o := func() error {
-		current, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(desired.Name, metav1.GetOptions{})
+		current, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Get(desired.Name, metav1.GetOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -129,7 +129,7 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1b
 			copy := desired.DeepCopy()
 			copy.SetResourceVersion(current.ResourceVersion)
 
-			_, err = c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Update(copy)
+			_, err = c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Update(copy)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -151,11 +151,11 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1b
 	return nil
 }
 
-func (c *CRDClient) validateStatus(crd *apiextensionsv1beta1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) validateStatus(crd *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
 	var err error
 
 	o := func() error {
-		manifest, err := c.k8sExtClient.ApiextensionsV1beta1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
+		manifest, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -164,7 +164,7 @@ func (c *CRDClient) validateStatus(crd *apiextensionsv1beta1.CustomResourceDefin
 		// and return the reason of the failing condition. Therefore we stop retries
 		// permanently.
 		{
-			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1beta1.NamesAccepted)
+			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1.NamesAccepted)
 			if ok && statusConditionFalse(con) {
 				return backoff.Permanent(microerror.Maskf(nameConflictError, con.Message))
 			}
@@ -173,7 +173,7 @@ func (c *CRDClient) validateStatus(crd *apiextensionsv1beta1.CustomResourceDefin
 		// return the reason of the failing condition. Therefore we stop retries
 		// permanently.
 		{
-			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1beta1.NonStructuralSchema)
+			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1.NonStructuralSchema)
 			if ok && statusConditionTrue(con) {
 				return backoff.Permanent(microerror.Maskf(notEstablishedError, con.Message))
 			}
@@ -181,7 +181,7 @@ func (c *CRDClient) validateStatus(crd *apiextensionsv1beta1.CustomResourceDefin
 		// In case the CRD is not yet established we have to retry and only return a
 		// normal error so that the backoff can do its job.
 		{
-			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1beta1.Established)
+			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1.Established)
 			if ok && statusConditionFalse(con) {
 				return microerror.Maskf(notEstablishedError, con.Message)
 			}
@@ -225,7 +225,7 @@ func (c *CRDClient) validateStatus(crd *apiextensionsv1beta1.CustomResourceDefin
 //
 //     https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-versioning
 //
-func crdVersionLatest(desired *apiextensionsv1beta1.CustomResourceDefinition, current *apiextensionsv1beta1.CustomResourceDefinition) (bool, error) {
+func crdVersionLatest(desired *apiextensionsv1.CustomResourceDefinition, current *apiextensionsv1.CustomResourceDefinition) (bool, error) {
 	desiredVersions := crdVersions(desired)
 	currentVersions := crdVersions(current)
 
@@ -267,18 +267,11 @@ func crdVersionLatest(desired *apiextensionsv1beta1.CustomResourceDefinition, cu
 	return true, nil
 }
 
-func crdVersions(crd *apiextensionsv1beta1.CustomResourceDefinition) []string {
+func crdVersions(crd *apiextensionsv1.CustomResourceDefinition) []string {
 	var versions []string
 
 	if crd == nil {
 		return versions
-	}
-
-	// Due to legacy reasons the single CRD version may still be given. Since this
-	// field is already deprecated in favour of the crd.Spec.Versions list this
-	// bit of code below may be dropped at some point in the future.
-	if crd.Spec.Version != "" {
-		versions = append(versions, crd.Spec.Version)
 	}
 
 	for _, v := range crd.Spec.Versions {
@@ -288,20 +281,20 @@ func crdVersions(crd *apiextensionsv1beta1.CustomResourceDefinition) []string {
 	return versions
 }
 
-func statusCondition(conditions []apiextensionsv1beta1.CustomResourceDefinitionCondition, t apiextensionsv1beta1.CustomResourceDefinitionConditionType) (apiextensionsv1beta1.CustomResourceDefinitionCondition, bool) {
+func statusCondition(conditions []apiextensionsv1.CustomResourceDefinitionCondition, t apiextensionsv1.CustomResourceDefinitionConditionType) (apiextensionsv1.CustomResourceDefinitionCondition, bool) {
 	for _, con := range conditions {
 		if con.Type == t {
 			return con, true
 		}
 	}
 
-	return apiextensionsv1beta1.CustomResourceDefinitionCondition{}, false
+	return apiextensionsv1.CustomResourceDefinitionCondition{}, false
 }
 
-func statusConditionFalse(con apiextensionsv1beta1.CustomResourceDefinitionCondition) bool {
-	return con.Status == apiextensionsv1beta1.ConditionFalse
+func statusConditionFalse(con apiextensionsv1.CustomResourceDefinitionCondition) bool {
+	return con.Status == apiextensionsv1.ConditionFalse
 }
 
-func statusConditionTrue(con apiextensionsv1beta1.CustomResourceDefinitionCondition) bool {
-	return con.Status == apiextensionsv1beta1.ConditionTrue
+func statusConditionTrue(con apiextensionsv1.CustomResourceDefinitionCondition) bool {
+	return con.Status == apiextensionsv1.ConditionTrue
 }
