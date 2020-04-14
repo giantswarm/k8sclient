@@ -14,7 +14,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 
-	"github.com/giantswarm/k8sclient/pkg/k8scrdclient"
+	"github.com/giantswarm/k8sclient/v1/pkg/k8scrdclient"
 )
 
 type ClientsConfig struct {
