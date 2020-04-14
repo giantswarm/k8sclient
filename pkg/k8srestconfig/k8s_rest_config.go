@@ -3,55 +3,39 @@
 //
 // Example usage:
 //
-//	import (
-//		"k8s.io/client-go/kubernetes"
-//		"k8s.io/client-go/rest"
-//		apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+//    import (
+//      "github.com/giantswarm/microerror"
+//      "k8s.io/client-go/rest"
 //
-//		"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
-//		"github.com/giantswarm/k8sclient/k8srestconfig"
-//		"github.com/giantswarm/microerror"
-//	)
+//      "github.com/giantswarm/k8sclient/pkg/k8srestconfig"
+//    )
 //
-//	func f(config Config) error {
-//		var err error
+//    func f(config Config) error {
+//      var err error
 //
-//		var restConfig *rest.Config
-//		{
-//			c := k8srestconfig.Config{
-//				Logger: config.Logger,
+//      var restConfig *rest.Config
+//      {
+//        c := k8srestconfig.Config{
+//          Logger: config.Logger,
 //
-//				Address:    config.Viper.GetString(config.Flag.Service.Kubernetes.Address),
-//				InCluster:  config.Viper.GetBool(config.Flag.Service.Kubernetes.InCluster),
-//				KubeConfig: config.Viper.GetBool(config.Flag.Service.Kubernetes.KubeConfig),
-//				TLS: k8srestconfig.ConfigTLS{
-//					CAFile:  config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.CAFile),
-//					CrtFile: config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.CrtFile),
-//					KeyFile: config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.KeyFile),
-//				},
-//			}
+//          Address:    config.Viper.GetString(config.Flag.Service.Kubernetes.Address),
+//          InCluster:  config.Viper.GetBool(config.Flag.Service.Kubernetes.InCluster),
+//          KubeConfig: config.Viper.GetString(config.Flag.Service.Kubernetes.KubeConfig),
+//          TLS: k8srestconfig.ConfigTLS{
+//            CAFile:  config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.CAFile),
+//            CrtFile: config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.CrtFile),
+//            KeyFile: config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.KeyFile),
+//          },
+//        }
 //
-//			restConfig, err = k8srestconfig.New(c)
-//			if err != nil {
-//				return microerror.Mask(err)
-//			}
-//		}
+//        restConfig, err = k8srestconfig.New(c)
+//        if err != nil {
+//          return microerror.Mask(err)
+//        }
+//      }
 //
-//		k8sClient, err := kubernetes.NewForConfig(restConfig)
-//		if err != nil {
-//			return micorerror.Mask(err)
-//		}
-//
-//		k8sExtClient, err := apiextensionsclient.NewForConfig(restConfig)
-//		if err != nil {
-//			return micorerror.Mask(err)
-//		}
-//
-//		g8sClient, err := versioned.NewForConfig(restConfig)
-//		if err != nil {
-//			return microerror.Mask(err)
-//		}
-//	}
+//      // use restConfig
+//    }
 //
 package k8srestconfig
 
