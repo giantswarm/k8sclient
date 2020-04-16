@@ -73,6 +73,19 @@ const (
 	DefaultTimeout = 10 * time.Second
 )
 
+// Config contains the common attributes to create a Kubernetes Clientset.
+type Config struct {
+	// Dependencies.
+	Logger micrologger.Logger
+
+	// Settings
+	Address    string
+	KubeConfig string
+	InCluster  bool
+	Timeout    time.Duration
+	TLS        ConfigTLS
+}
+
 // ConfigTLS contains settings to enable transport layer security.
 type ConfigTLS struct {
 	// CAFile is the CA certificate for the cluster.
@@ -87,19 +100,6 @@ type ConfigTLS struct {
 	CrtData []byte
 	// KeyData holds PEM-encoded bytes. KeyData takes precedence over KeyFile.
 	KeyData []byte
-}
-
-// Config contains the common attributes to create a Kubernetes Clientset.
-type Config struct {
-	// Dependencies.
-	Logger micrologger.Logger
-
-	// Settings
-	Address    string
-	KubeConfig string
-	InCluster  bool
-	Timeout    time.Duration
-	TLS        ConfigTLS
 }
 
 // New returns a Kubernetes REST configuration for clients.
