@@ -19,13 +19,6 @@ const (
 
 var kubeVersionRegex = regexp.MustCompile(`^v([\d]+)(?:(alpha|beta)([\d]+))?$`)
 
-type pair struct {
-	k8s   string
-	major int
-	minor int
-	patch int
-}
-
 // Latest returns the latest version given with the Kubernetes API versions.
 // Given [v1alpha1, v1, v2alpha3] then v2alpha3 is returned as it is the latest
 // version.
