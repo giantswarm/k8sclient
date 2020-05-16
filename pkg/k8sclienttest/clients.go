@@ -35,7 +35,7 @@ type Clients struct {
 	restConfig *rest.Config
 }
 
-func NewClients(config ClientsConfig) (*Clients, error) {
+func NewClients(config ClientsConfig) *Clients {
 	c := &Clients{
 		crdClient:  config.CrdClient,
 		ctrlClient: config.CtrlClient,
@@ -47,7 +47,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		restConfig: config.RestConfig,
 	}
 
-	return c, nil
+	return c
 }
 
 func (c *Clients) CRDClient() k8scrdclient.Interface {
