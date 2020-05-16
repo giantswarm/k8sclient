@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+
+## [3.1.0] 2020-05-16
+
 ### Changed
 
 - Simplify test interface.
@@ -67,8 +71,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v3.1.0...HEAD
 
+[3.1.0]: https://github.com/giantswarm/k8sclient/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/giantswarm/k8sclient/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/giantswarm/k8sclient/compare/v1.0.1...v2.0.0
 [1.0.1]: https://github.com/giantswarm/k8sclient/compare/v1.0.0...v1.0.1
