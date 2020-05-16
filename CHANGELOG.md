@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Simplify test interface.
+- Add `k8sclienttest.NewEmpty`.
+
 
 
 ## [3.0.0] 2020-04-14
