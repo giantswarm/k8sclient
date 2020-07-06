@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add release workflows.
+
+### Changed
+
+- Update `go.mod` file.
+
 
 
 ## [3.1.0] 2020-05-16
