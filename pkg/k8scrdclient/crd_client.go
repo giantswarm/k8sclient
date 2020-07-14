@@ -56,7 +56,7 @@ func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1.Cust
 		return microerror.Mask(err)
 	}
 
-	err = c.validateStatus(crd, b)
+	err = c.validateStatus(ctx, crd, b)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -67,7 +67,7 @@ func (c *CRDClient) EnsureCreated(ctx context.Context, crd *apiextensionsv1.Cust
 // EnsureDeleted ensures the given CRD does not exist.
 func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
 	o := func() error {
-		err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Delete(crd.Name, nil)
+		err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Delete(ctx, crd.Name, metav1.DeleteOptions{})
 		if errors.IsNotFound(err) {
 			// Fall trough. We reached our goal.
 		} else if err != nil {
@@ -88,7 +88,7 @@ func (c *CRDClient) EnsureDeleted(ctx context.Context, crd *apiextensionsv1.Cust
 func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition) error {
 	c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating CRD %#q", crd.Name))
 
-	_, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Create(crd)
+	_, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Create(ctx, crd, metav1.CreateOptions{})
 	if errors.IsAlreadyExists(err) {
 		// Fall through. We need to check CRD status.
 		c.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("not creating CRD %#q", crd.Name))
@@ -109,7 +109,7 @@ func (c *CRDClient) ensureCreated(ctx context.Context, crd *apiextensionsv1.Cust
 // runtime object lifecycle and community adoption.
 func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
 	o := func() error {
-		current, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Get(desired.Name, metav1.GetOptions{})
+		current, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Get(ctx, desired.Name, metav1.GetOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -129,7 +129,7 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1.
 			copy := desired.DeepCopy()
 			copy.SetResourceVersion(current.ResourceVersion)
 
-			_, err = c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Update(copy)
+			_, err = c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Update(ctx, copy, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -151,11 +151,11 @@ func (c *CRDClient) ensureUpdated(ctx context.Context, desired *apiextensionsv1.
 	return nil
 }
 
-func (c *CRDClient) validateStatus(crd *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
+func (c *CRDClient) validateStatus(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition, b backoff.Interface) error {
 	var err error
 
 	o := func() error {
-		manifest, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Get(crd.Name, metav1.GetOptions{})
+		manifest, err := c.k8sExtClient.ApiextensionsV1().CustomResourceDefinitions().Get(ctx, crd.Name, metav1.GetOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
