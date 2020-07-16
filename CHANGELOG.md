@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.2] - 2020-07-16
+
 ### Changed
 
 - Updated apiextensions to v0.4.15
@@ -84,7 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v3.1.1...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v3.1.2...HEAD
+[3.1.2]: https://github.com/giantswarm/k8sclient/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/giantswarm/k8sclient/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/giantswarm/k8sclient/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/giantswarm/k8sclient/compare/v2.0.0...v3.0.0
