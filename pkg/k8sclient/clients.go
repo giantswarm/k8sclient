@@ -1,7 +1,7 @@
 package k8sclient
 
 import (
-	"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
+	"github.com/giantswarm/apiextensions/v2/pkg/clientset/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
@@ -14,7 +14,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 
-	"github.com/giantswarm/k8sclient/v3/pkg/k8scrdclient"
+	"github.com/giantswarm/k8sclient/v4/pkg/k8scrdclient"
 )
 
 type ClientsConfig struct {
