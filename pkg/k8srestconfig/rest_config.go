@@ -8,8 +8,8 @@
 //		"k8s.io/client-go/rest"
 //		apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 //
-//		"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
-//		"github.com/giantswarm/k8sclient/k8srestconfig"
+//		"github.com/giantswarm/apiextensions/v2/pkg/clientset/versioned"
+//		"github.com/giantswarm/k8sclient/v4/pkg/k8srestconfig"
 //		"github.com/giantswarm/microerror"
 //	)
 //

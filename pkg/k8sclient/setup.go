@@ -71,7 +71,7 @@ func (s *Setup) EnsureNamespaceCreated(ctx context.Context, namespace string) er
 					Name: namespace,
 				},
 			}
-			_, err := s.clients.K8sClient().CoreV1().Namespaces().Create(n)
+			_, err := s.clients.K8sClient().CoreV1().Namespaces().Create(ctx, n, metav1.CreateOptions{})
 			if errors.IsAlreadyExists(err) {
 				// fall through
 			} else if err != nil {
@@ -80,7 +80,7 @@ func (s *Setup) EnsureNamespaceCreated(ctx context.Context, namespace string) er
 		}
 
 		{
-			n, err := s.clients.K8sClient().CoreV1().Namespaces().Get(namespace, metav1.GetOptions{})
+			n, err := s.clients.K8sClient().CoreV1().Namespaces().Get(ctx, namespace, metav1.GetOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -108,7 +108,7 @@ func (s *Setup) EnsureNamespaceDeleted(ctx context.Context, namespace string) er
 
 	o := func() error {
 		{
-			err := s.clients.K8sClient().CoreV1().Namespaces().Delete(namespace, &metav1.DeleteOptions{})
+			err := s.clients.K8sClient().CoreV1().Namespaces().Delete(ctx, namespace, metav1.DeleteOptions{})
 			if errors.IsNotFound(err) {
 				// fall through
 			} else if err != nil {
