@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Improved error message in `k8sclient.NewClients` function
+
 ## [4.0.0] - 2020-08-10
 
 ### Changed
