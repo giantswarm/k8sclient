@@ -48,7 +48,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 	}
 
 	if config.KubeConfigPath == "" && config.RestConfig == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.KubeConfigPath or %T.RestConfig must not be empty", config, config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.KubeConfigPath and %T.RestConfig must not be empty at the same time)", config, config)
 	}
 	if config.KubeConfigPath != "" && config.RestConfig != nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.KubeConfigPath and %T.RestConfig must not be set at the same time", config, config)
