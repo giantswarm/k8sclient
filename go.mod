@@ -3,6 +3,7 @@ module github.com/giantswarm/k8sclient/v4
 go 1.14
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/giantswarm/apiextensions/v2 v2.2.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/microerror v0.2.1

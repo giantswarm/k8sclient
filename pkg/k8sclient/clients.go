@@ -1,6 +1,7 @@
 package k8sclient
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	"github.com/giantswarm/apiextensions/v2/pkg/clientset/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -113,6 +114,9 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		// properly on our own instead of relying on the manager to provide a
 		// client, which might change in the future.
 		mapper, err := apiutil.NewDynamicRESTMapper(rest.CopyConfig(restConfig))
+		spew.Dump("Blubbb")
+		spew.Dump(restConfig)
+		spew.Dump(err)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
