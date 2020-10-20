@@ -8,13 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Update apiextensions to new major version v3.2.0.
-- Prepare module v5.
-
-### Fixed
-
 - Improved error message in `k8sclient.NewClients` function
 
 ## [4.0.0] - 2020-08-10
