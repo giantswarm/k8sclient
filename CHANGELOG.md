@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2020-10-20
+
 ### Changed
 
 - Update apiextensions to new major version v3.2.0.
@@ -101,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v5.0.0...HEAD
+[5.0.0]: https://github.com/giantswarm/k8sclient/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/giantswarm/k8sclient/compare/v3.1.2...v4.0.0
 [3.1.2]: https://github.com/giantswarm/k8sclient/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/giantswarm/k8sclient/compare/v3.1.0...v3.1.1
