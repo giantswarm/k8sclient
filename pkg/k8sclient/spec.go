@@ -1,7 +1,7 @@
 package k8sclient
 
 import (
-	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
+	"github.com/giantswarm/apiextensions/v2/pkg/clientset/versioned"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/dynamic"
@@ -9,7 +9,7 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/k8sclient/v5/pkg/k8scrdclient"
+	"github.com/giantswarm/k8sclient/v4/pkg/k8scrdclient"
 )
 
 type Interface interface {
