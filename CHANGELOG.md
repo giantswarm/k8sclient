@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update apiextensions to new major version v3.2.0.
+- Update apiextensions to v3 and replace CAPI with Giant Swarm fork.
 - Prepare module v5.
 
 ### Fixed
