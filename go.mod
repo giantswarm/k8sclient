@@ -3,7 +3,7 @@ module github.com/giantswarm/k8sclient/v5
 go 1.14
 
 require (
-	github.com/giantswarm/apiextensions/v3 v3.9.0
+	github.com/giantswarm/apiextensions/v3 v3.11.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/microerror v0.2.1
 	github.com/giantswarm/micrologger v0.3.4
