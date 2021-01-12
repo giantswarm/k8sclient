@@ -47,7 +47,7 @@ type Clients struct {
 	restConfig *rest.Config
 }
 
-func NewFakeClients(config ClientsConfig) (*Clients, error) {
+func NewFakeClients(config ClientsConfig, objects ...runtime.Object) (*Clients, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
@@ -61,7 +61,7 @@ func NewFakeClients(config ClientsConfig) (*Clients, error) {
 
 	var extClient apiextensionsclient.Interface
 	{
-		extClient = apiextensionsclientfake.NewSimpleClientset()
+		extClient = apiextensionsclientfake.NewSimpleClientset(objects...)
 	}
 
 	var crdClient *k8scrdclient.CRDClient
@@ -91,22 +91,22 @@ func NewFakeClients(config ClientsConfig) (*Clients, error) {
 			}
 		}
 
-		ctrlClient = clientfake.NewFakeClientWithScheme(scheme.Scheme)
+		ctrlClient = clientfake.NewFakeClientWithScheme(scheme.Scheme, objects...)
 	}
 
 	var dynClient dynamic.Interface
 	{
-		dynClient = dynamicfake.NewSimpleDynamicClient(scheme.Scheme)
+		dynClient = dynamicfake.NewSimpleDynamicClient(scheme.Scheme, objects...)
 	}
 
 	var g8sClient versioned.Interface
 	{
-		g8sClient = versionedfake.NewSimpleClientset()
+		g8sClient = versionedfake.NewSimpleClientset(objects...)
 	}
 
 	var k8sClient kubernetes.Interface
 	{
-		k8sClient = kubernetesfake.NewSimpleClientset()
+		k8sClient = kubernetesfake.NewSimpleClientset(objects...)
 	}
 
 	c := &Clients{
