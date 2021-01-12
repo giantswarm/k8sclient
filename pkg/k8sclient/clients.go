@@ -6,6 +6,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+	apiextensionsclientfake "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/dynamic"
 	dynamicfake "k8s.io/client-go/dynamic/fake"
@@ -58,6 +59,24 @@ func NewFakeClients(config ClientsConfig, objects ...runtime.Object) (*Clients, 
 		restConfig = config.RestConfig
 	}
 
+	var extClient apiextensionsclient.Interface
+	{
+		extClient = apiextensionsclientfake.NewSimpleClientset()
+	}
+
+	var crdClient *k8scrdclient.CRDClient
+	{
+		c := k8scrdclient.Config{
+			K8sExtClient: extClient,
+			Logger:       config.Logger,
+		}
+
+		crdClient, err = k8scrdclient.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var ctrlClient client.Client
 	{
 		if config.SchemeBuilder != nil {
@@ -82,7 +101,7 @@ func NewFakeClients(config ClientsConfig, objects ...runtime.Object) (*Clients, 
 
 	var g8sClient versioned.Interface
 	{
-		g8sClient = versionedfake.NewSimpleClientset(objects...)
+		g8sClient = versionedfake.NewSimpleClientset()
 	}
 
 	var k8sClient kubernetes.Interface
@@ -93,8 +112,10 @@ func NewFakeClients(config ClientsConfig, objects ...runtime.Object) (*Clients, 
 	c := &Clients{
 		logger: config.Logger,
 
+		crdClient:  crdClient,
 		ctrlClient: ctrlClient,
 		dynClient:  dynClient,
+		extClient:  extClient,
 		g8sClient:  g8sClient,
 		k8sClient:  k8sClient,
 		restConfig: restConfig,
