@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Fake clientset for testing (port from v4)
+
 ## [5.0.0] - 2020-10-27
 
 ### Changed
