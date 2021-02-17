@@ -1,6 +1,9 @@
 package k8sclient
 
 import (
+	"context"
+	"errors"
+
 	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -113,7 +116,9 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		// properly on our own instead of relying on the manager to provide a
 		// client, which might change in the future.
 		mapper, err := apiutil.NewDynamicRESTMapper(rest.CopyConfig(restConfig))
-		if err != nil {
+		if errors.Is(err, context.DeadlineExceeded) {
+			return nil, microerror.Mask(timeoutError)
+		} else if err != nil {
 			return nil, microerror.Mask(err)
 		}
 

@@ -19,3 +19,12 @@ var unexpectedStatusPhaseError = &microerror.Error{
 func IsUnexpectedStatusPhase(err error) bool {
 	return microerror.Cause(err) == unexpectedStatusPhaseError
 }
+
+var timeoutError = &microerror.Error{
+	Kind: "timeoutError",
+}
+
+// IsTimeout asserts timeoutError.
+func IsTimeout(err error) bool {
+	return microerror.Cause(err) == timeoutError
+}
