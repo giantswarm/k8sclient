@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Handle timeout when discovering dynamic client and return as custom error.
+
 ## [5.10.0] - 2021-02-08
 
 ### Added
