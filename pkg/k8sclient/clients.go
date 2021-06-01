@@ -198,6 +198,16 @@ func (c *Clients) CRDClient() k8scrdclient.Interface {
 	return c.crdClient
 }
 
+// CtrlCache returns caching reader. Current underlying implementation uses
+// `controller-runtime/pkg/cache.Cache` which has watch-based approach to
+// object caching. It creates an informer for each GVK on first invocation for
+// the given type and warms up the cache before returning.
+//
+// Therefore this shouldn't be used blindly as a replacement for `CtrlClient()`
+// because when used for high cardinality objects such as `Pods`, it would
+// yield high memory usage and depending on cluster workload churn, increase
+// overall resource usage both on utilizing program but also on k8s apiserver,
+// effectively counteracting original intention.
 func (c *Clients) CtrlCache() client.Reader {
 	return c.ctrlCache
 }
