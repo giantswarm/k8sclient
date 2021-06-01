@@ -14,6 +14,7 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 
@@ -37,6 +38,7 @@ type Clients struct {
 
 	crdClient  k8scrdclient.Interface
 	ctrlClient client.Client
+	ctrlCache  cache.Cache
 	dynClient  dynamic.Interface
 	extClient  apiextensionsclient.Interface
 	g8sClient  versioned.Interface
@@ -95,6 +97,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 	}
 
 	var ctrlClient client.Client
+	var ctrlCache cache.Cache
 	{
 		if config.SchemeBuilder != nil {
 			// Extend the global client-go scheme which is used by all the tools under
@@ -123,6 +126,11 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		}
 
 		ctrlClient, err = client.New(rest.CopyConfig(restConfig), client.Options{Scheme: scheme.Scheme, Mapper: mapper})
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		ctrlCache, err = cache.New(rest.CopyConfig(restConfig), cache.Options{Scheme: scheme.Scheme, Mapper: mapper})
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -174,6 +182,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 
 		crdClient:  crdClient,
 		ctrlClient: ctrlClient,
+		ctrlCache:  ctrlCache,
 		dynClient:  dynClient,
 		extClient:  extClient,
 		g8sClient:  g8sClient,
@@ -187,6 +196,10 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 
 func (c *Clients) CRDClient() k8scrdclient.Interface {
 	return c.crdClient
+}
+
+func (c *Clients) CtrlCache() client.Reader {
+	return c.ctrlCache
 }
 
 func (c *Clients) CtrlClient() client.Client {
