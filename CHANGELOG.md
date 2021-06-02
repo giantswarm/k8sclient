@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `k8sclient.CtrlCache()` method to make caching client available via common client construction.
+
 ## [5.11.0] - 2021-02-18
 
 ### Added

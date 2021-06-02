@@ -119,6 +119,10 @@ func (c *Clients) CtrlClient() client.Client {
 	return c.ctrlClient
 }
 
+func (c *Clients) CtrlCache() client.Reader {
+	return c.ctrlClient
+}
+
 func (c *Clients) DynClient() dynamic.Interface {
 	return c.dynClient
 }
