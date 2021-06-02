@@ -15,7 +15,6 @@ import (
 type Interface interface {
 	CRDClient() k8scrdclient.Interface
 	CtrlClient() client.Client
-	CtrlCache() client.Reader
 	DynClient() dynamic.Interface
 	ExtClient() apiextensionsclient.Interface
 	G8sClient() versioned.Interface
