@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.12.0] - 2021-08-05
+
 ### Changed
 
 - Update apiextensions to v3.30 to introduce `v1alpha3` GS AWS CR's.
@@ -119,7 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v5.11.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v5.12.0...HEAD
+[5.12.0]: https://github.com/giantswarm/k8sclient/compare/v5.11.0...v5.12.0
 [5.11.0]: https://github.com/giantswarm/k8sclient/compare/v5.10.0...v5.11.0
 [5.10.0]: https://github.com/giantswarm/k8sclient/compare/v5.0.0...v5.10.0
 [5.0.0]: https://github.com/giantswarm/k8sclient/compare/v4.0.0...v5.0.0
