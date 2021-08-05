@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update apiextensions to v3.30 to introduce `v1alpha3` GS AWS CR's.
+-
 ## [5.11.0] - 2021-02-18
 
 ### Added
