@@ -51,4 +51,7 @@ require (
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )
 
-replace github.com/spf13/viper => github.com/spf13/viper v1.9.0
+replace (
+	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
+	github.com/spf13/viper => github.com/spf13/viper v1.9.0
+)
