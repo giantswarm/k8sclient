@@ -60,7 +60,10 @@ func NewClients(config k8sclient.ClientsConfig, objects ...runtime.Object) (*Cli
 			}
 		}
 
-		ctrlClient = clientfake.NewFakeClientWithScheme(scheme.Scheme, objects...)
+		ctrlClient = clientfake.NewClientBuilder().
+			WithScheme(scheme.Scheme).
+			WithRuntimeObjects(objects...).
+			Build()
 	}
 
 	var dynClient dynamic.Interface
