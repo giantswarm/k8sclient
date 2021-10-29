@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update Kubernetes dependencies to v1.20.12.
+- Update controller-runtime to v0.8.3.
+- Update architect-orb to v4.6.0.
+
+### Removed
+
+- Remove CRD client (CRDClient) and typed client (G8sClient) to avoid dependency on apiextensions.
+
 ## [5.12.0] - 2021-08-05
 
 ### Changed

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
@@ -16,8 +15,6 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
-
-	"github.com/giantswarm/k8sclient/v5/pkg/k8scrdclient"
 )
 
 type ClientsConfig struct {
@@ -35,11 +32,9 @@ type ClientsConfig struct {
 type Clients struct {
 	logger micrologger.Logger
 
-	crdClient  k8scrdclient.Interface
 	ctrlClient client.Client
 	dynClient  dynamic.Interface
 	extClient  apiextensionsclient.Interface
-	g8sClient  versioned.Interface
 	k8sClient  kubernetes.Interface
 	restClient rest.Interface
 	restConfig *rest.Config
@@ -76,19 +71,6 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		c := rest.CopyConfig(restConfig)
 
 		extClient, err = apiextensionsclient.NewForConfig(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var crdClient *k8scrdclient.CRDClient
-	{
-		c := k8scrdclient.Config{
-			K8sExtClient: extClient,
-			Logger:       config.Logger,
-		}
-
-		crdClient, err = k8scrdclient.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -138,16 +120,6 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		}
 	}
 
-	var g8sClient *versioned.Clientset
-	{
-		c := rest.CopyConfig(restConfig)
-
-		g8sClient, err = versioned.NewForConfig(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var k8sClient *kubernetes.Clientset
 	{
 		c := rest.CopyConfig(restConfig)
@@ -172,21 +144,15 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 	c := &Clients{
 		logger: config.Logger,
 
-		crdClient:  crdClient,
 		ctrlClient: ctrlClient,
 		dynClient:  dynClient,
 		extClient:  extClient,
-		g8sClient:  g8sClient,
 		k8sClient:  k8sClient,
 		restClient: restClient,
 		restConfig: restConfig,
 	}
 
 	return c, nil
-}
-
-func (c *Clients) CRDClient() k8scrdclient.Interface {
-	return c.crdClient
 }
 
 func (c *Clients) CtrlClient() client.Client {
@@ -199,10 +165,6 @@ func (c *Clients) DynClient() dynamic.Interface {
 
 func (c *Clients) ExtClient() apiextensionsclient.Interface {
 	return c.extClient
-}
-
-func (c *Clients) G8sClient() versioned.Interface {
-	return c.g8sClient
 }
 
 func (c *Clients) K8sClient() kubernetes.Interface {

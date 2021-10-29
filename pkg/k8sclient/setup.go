@@ -8,7 +8,6 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	v1 "k8s.io/api/core/v1"
-	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -37,28 +36,6 @@ func NewSetup(config SetupConfig) (*Setup, error) {
 	}
 
 	return s, nil
-}
-
-func (s *Setup) EnsureCRDCreated(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition) error {
-	b := backoff.NewExponential(backoff.ShortMaxWait, backoff.ShortMaxInterval)
-
-	err := s.clients.CRDClient().EnsureCreated(ctx, crd, b)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	return nil
-}
-
-func (s *Setup) EnsureCRDDeleted(ctx context.Context, crd *apiextensionsv1.CustomResourceDefinition) error {
-	b := backoff.NewExponential(backoff.ShortMaxWait, backoff.ShortMaxInterval)
-
-	err := s.clients.CRDClient().EnsureDeleted(ctx, crd, b)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	return nil
 }
 
 func (s *Setup) EnsureNamespaceCreated(ctx context.Context, namespace string) error {

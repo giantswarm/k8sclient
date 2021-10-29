@@ -8,7 +8,6 @@
 //		"k8s.io/client-go/rest"
 //		apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 //
-//		"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
 //		"github.com/giantswarm/k8sclient/v5/pkg/k8srestconfig"
 //		"github.com/giantswarm/microerror"
 //	)
@@ -45,11 +44,6 @@
 //		k8sExtClient, err := apiextensionsclient.NewForConfig(restConfig)
 //		if err != nil {
 //			return micorerror.Mask(err)
-//		}
-//
-//		g8sClient, err := versioned.NewForConfig(restConfig)
-//		if err != nil {
-//			return microerror.Mask(err)
 //		}
 //	}
 //

@@ -1,7 +1,6 @@
 package k8sclienttest
 
 import (
-	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/dynamic"
@@ -9,27 +8,21 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-
-	"github.com/giantswarm/k8sclient/v5/pkg/k8scrdclient"
 )
 
 type ClientsConfig struct {
-	CrdClient  k8scrdclient.Interface
 	CtrlClient client.Client
 	DynClient  dynamic.Interface
 	ExtClient  apiextensionsclient.Interface
-	G8sClient  versioned.Interface
 	K8sClient  kubernetes.Interface
 	RestClient rest.Interface
 	RestConfig *rest.Config
 }
 
 type Clients struct {
-	crdClient  k8scrdclient.Interface
 	ctrlClient client.Client
 	dynClient  dynamic.Interface
 	extClient  apiextensionsclient.Interface
-	g8sClient  versioned.Interface
 	k8sClient  kubernetes.Interface
 	restClient rest.Interface
 	restConfig *rest.Config
@@ -37,21 +30,15 @@ type Clients struct {
 
 func NewClients(config ClientsConfig) *Clients {
 	c := &Clients{
-		crdClient:  config.CrdClient,
 		ctrlClient: config.CtrlClient,
 		dynClient:  config.DynClient,
 		extClient:  config.ExtClient,
-		g8sClient:  config.G8sClient,
 		k8sClient:  config.K8sClient,
 		restClient: config.RestClient,
 		restConfig: config.RestConfig,
 	}
 
 	return c
-}
-
-func (c *Clients) CRDClient() k8scrdclient.Interface {
-	return c.crdClient
 }
 
 func (c *Clients) CtrlClient() client.Client {
@@ -64,10 +51,6 @@ func (c *Clients) DynClient() dynamic.Interface {
 
 func (c *Clients) ExtClient() apiextensionsclient.Interface {
 	return c.extClient
-}
-
-func (c *Clients) G8sClient() versioned.Interface {
-	return c.g8sClient
 }
 
 func (c *Clients) K8sClient() kubernetes.Interface {
