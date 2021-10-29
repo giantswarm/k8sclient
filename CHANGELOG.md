@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2021-10-29
+
 ### Changed
 
 - Update Kubernetes dependencies to v1.20.12.
@@ -131,7 +133,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v5.12.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v6.0.0...HEAD
+[6.0.0]: https://github.com/giantswarm/k8sclient/compare/v5.12.0...v6.0.0
 [5.12.0]: https://github.com/giantswarm/k8sclient/compare/v5.11.0...v5.12.0
 [5.11.0]: https://github.com/giantswarm/k8sclient/compare/v5.10.0...v5.11.0
 [5.10.0]: https://github.com/giantswarm/k8sclient/compare/v5.0.0...v5.10.0
