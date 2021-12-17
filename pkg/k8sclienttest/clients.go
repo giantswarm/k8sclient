@@ -8,9 +8,12 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/giantswarm/k8sclient/v6/pkg/k8scrdclient"
 )
 
 type ClientsConfig struct {
+	CRDClient  k8scrdclient.Interface
 	CtrlClient client.Client
 	DynClient  dynamic.Interface
 	ExtClient  apiextensionsclient.Interface
@@ -20,6 +23,7 @@ type ClientsConfig struct {
 }
 
 type Clients struct {
+	crdClient  k8scrdclient.Interface
 	ctrlClient client.Client
 	dynClient  dynamic.Interface
 	extClient  apiextensionsclient.Interface
@@ -30,6 +34,7 @@ type Clients struct {
 
 func NewClients(config ClientsConfig) *Clients {
 	c := &Clients{
+		crdClient:  config.CRDClient,
 		ctrlClient: config.CtrlClient,
 		dynClient:  config.DynClient,
 		extClient:  config.ExtClient,
@@ -39,6 +44,10 @@ func NewClients(config ClientsConfig) *Clients {
 	}
 
 	return c
+}
+
+func (c *Clients) CRDClient() k8scrdclient.Interface {
+	return c.crdClient
 }
 
 func (c *Clients) CtrlClient() client.Client {

@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade github.com/giantswarm/microerror v0.3.0 to v0.4.0
 - Upgrade github.com/giantswarm/micrologger v0.5.0 to v0.6.0
 
+## [6.1.0] - 2021-12-17
+
+### Added
+
+- Add back CRDClient removed in v6.0.0.
+
 ## [6.0.0] - 2021-10-29
 
 ### Changed
@@ -139,7 +145,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v6.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v6.1.0...HEAD
+[6.1.0]: https://github.com/giantswarm/k8sclient/compare/v6.0.0...v6.1.0
 [6.0.0]: https://github.com/giantswarm/k8sclient/compare/v5.12.0...v6.0.0
 [5.12.0]: https://github.com/giantswarm/k8sclient/compare/v5.11.0...v5.12.0
 [5.11.0]: https://github.com/giantswarm/k8sclient/compare/v5.10.0...v5.11.0

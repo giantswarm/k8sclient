@@ -7,9 +7,12 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/giantswarm/k8sclient/v6/pkg/k8scrdclient"
 )
 
 type Interface interface {
+	CRDClient() k8scrdclient.Interface
 	CtrlClient() client.Client
 	DynClient() dynamic.Interface
 	ExtClient() apiextensionsclient.Interface
