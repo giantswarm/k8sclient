@@ -56,7 +56,5 @@ require (
 
 replace (
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
-	github.com/giantswarm/k8sclient/v7/pkg/k8scrdclient => ./pkg/k8scrdclient
-	github.com/giantswarm/k8sclient/v7/pkg/k8sversion => ./pkg/k8sversion
 	github.com/spf13/viper => github.com/spf13/viper v1.9.0
 )
