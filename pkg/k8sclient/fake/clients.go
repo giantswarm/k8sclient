@@ -16,11 +16,13 @@ import (
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake" //nolint:staticcheck // v0.6.4 has a deprecation on pkg/client/fake that was removed in later versions
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v7/pkg/k8scrdclient"
 )
 
 type Clients struct {
 	logger micrologger.Logger
 
+	crdClient  k8scrdclient.Interface
 	ctrlClient client.Client
 	dynClient  dynamic.Interface
 	extClient  apiextensionsclient.Interface
@@ -44,6 +46,19 @@ func NewClients(config k8sclient.ClientsConfig, objects ...runtime.Object) (*Cli
 	var extClient apiextensionsclient.Interface
 	{
 		extClient = apiextensionsclientfake.NewSimpleClientset()
+	}
+
+	var crdClient k8scrdclient.Interface
+	{
+		c := k8scrdclient.Config{
+			K8sExtClient: extClient,
+			Logger:       config.Logger,
+		}
+
+		crdClient, err = k8scrdclient.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	var ctrlClient client.Client
@@ -79,6 +94,7 @@ func NewClients(config k8sclient.ClientsConfig, objects ...runtime.Object) (*Cli
 	c := &Clients{
 		logger: config.Logger,
 
+		crdClient:  crdClient,
 		ctrlClient: ctrlClient,
 		dynClient:  dynClient,
 		extClient:  extClient,
@@ -87,6 +103,10 @@ func NewClients(config k8sclient.ClientsConfig, objects ...runtime.Object) (*Cli
 	}
 
 	return c, nil
+}
+
+func (c *Clients) CRDClient() k8scrdclient.Interface {
+	return c.crdClient
 }
 
 func (c *Clients) CtrlClient() client.Client {
