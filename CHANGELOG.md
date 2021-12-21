@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.0] - 2021-12-21
+
 ### Fixed
 
 - Fix k8sclient/fake missing `CRDClient()` method.
@@ -151,7 +153,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v7.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v7.1.0...HEAD
+[7.1.0]: https://github.com/giantswarm/k8sclient/compare/v7.0.0...v7.1.0
 [7.0.0]: https://github.com/giantswarm/k8sclient/compare/v6.1.0...v7.0.0
 [6.1.0]: https://github.com/giantswarm/k8sclient/compare/v6.0.0...v6.1.0
 [6.0.0]: https://github.com/giantswarm/k8sclient/compare/v5.12.0...v6.0.0
