@@ -6,7 +6,7 @@ require (
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/microerror v0.4.0
 	github.com/giantswarm/micrologger v0.6.0
-	github.com/google/go-cmp v0.5.6
+	github.com/google/go-cmp v0.5.7
 	k8s.io/api v0.20.12
 	k8s.io/apiextensions-apiserver v0.20.12
 	k8s.io/apimachinery v0.20.12
