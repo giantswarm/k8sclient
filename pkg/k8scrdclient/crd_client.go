@@ -211,9 +211,9 @@ func (c *CRDClient) validateStatus(ctx context.Context, crd *apiextensionsv1.Cus
 // support. There is some orchestration involved the system's maintainers have
 // to get right.
 //
-//         o1    |     o2     |    o3
-//     ---------------------------------
-//         v1    |   v1, v2   |   v2, v3
+//	    o1    |     o2     |    o3
+//	---------------------------------
+//	    v1    |   v1, v2   |   v2, v3
 //
 // Each operator compares the latest version it finds in desired and current. If
 // the latest version of desired is below the latest version of current, the
@@ -223,8 +223,7 @@ func (c *CRDClient) validateStatus(ctx context.Context, crd *apiextensionsv1.Cus
 // Note that the given versions must be in the format of usual Kubernetes
 // APIVersions, e.g. v1alpha1, v2beta5, v2.
 //
-//     https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-versioning
-//
+//	https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-versioning
 func crdVersionLatest(desired *apiextensionsv1.CustomResourceDefinition, current *apiextensionsv1.CustomResourceDefinition) (bool, error) {
 	desiredVersions := crdVersions(desired)
 	currentVersions := crdVersions(current)
