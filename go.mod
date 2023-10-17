@@ -11,14 +11,14 @@ require (
 	k8s.io/apiextensions-apiserver v0.28.2
 	k8s.io/apimachinery v0.28.2
 	k8s.io/client-go v0.28.2
-	sigs.k8s.io/controller-runtime v0.15.1
+	sigs.k8s.io/controller-runtime v0.16.2
 )
 
 require (
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
-	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
+	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
