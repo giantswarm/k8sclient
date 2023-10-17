@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/microerror v0.4.0
-	github.com/giantswarm/micrologger v0.6.0
+	github.com/giantswarm/micrologger v1.0.0
 	github.com/google/go-cmp v0.6.0
 	k8s.io/api v0.28.2
 	k8s.io/apiextensions-apiserver v0.28.2
