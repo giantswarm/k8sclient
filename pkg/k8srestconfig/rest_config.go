@@ -46,7 +46,6 @@
 //			return micorerror.Mask(err)
 //		}
 //	}
-//
 package k8srestconfig
 
 import (
