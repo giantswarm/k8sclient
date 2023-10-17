@@ -95,9 +95,8 @@ func Less(a string, b string) (bool, error) {
 // repository upstream provides. For more information on Kubernetes API
 // Versioning check the official docs.
 //
-//     https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-versioning
-//     https://github.com/kubernetes/apimachinery/blob/b9f0d37e94c6953b55a668a9c4134da6262acfe5/pkg/version/helpers.go
-//
+//	https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-versioning
+//	https://github.com/kubernetes/apimachinery/blob/b9f0d37e94c6953b55a668a9c4134da6262acfe5/pkg/version/helpers.go
 func parseSemver(v string) (major int, minor int, patch int, err error) {
 	submatches := kubeVersionRegex.FindStringSubmatch(v)
 	if len(submatches) != 4 {

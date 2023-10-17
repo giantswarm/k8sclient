@@ -10,5 +10,4 @@ import "k8s.io/apimachinery/pkg/runtime"
 //	k8sclient.SchemeBuilder{
 //		myapiversion.AddToShcheme,
 //	}
-//
 type SchemeBuilder []func(*runtime.Scheme) error

@@ -106,6 +106,12 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 			}
 		}
 
+		// Create a http client for the cluster
+		httpClient, err := rest.HTTPClientFor(rest.CopyConfig(restConfig))
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
 		// Configure a dynamic rest mapper to the controller client so it can work
 		// with runtime objects of arbitrary types. Note that this is the default
 		// for controller clients created by controller-runtime managers.
@@ -113,7 +119,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 		// we want to separate client and manager. Thus we configure the client here
 		// properly on our own instead of relying on the manager to provide a
 		// client, which might change in the future.
-		mapper, err := apiutil.NewDynamicRESTMapper(rest.CopyConfig(restConfig))
+		mapper, err := apiutil.NewDynamicRESTMapper(rest.CopyConfig(restConfig), httpClient)
 		if errors.Is(err, context.DeadlineExceeded) {
 			return nil, microerror.Mask(timeoutError)
 		} else if err != nil {
