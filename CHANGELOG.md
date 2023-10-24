@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.0] - 2023-10-24
+
 ### Changed
 
 - Upgrade controller-runtime to v0.16.3
@@ -157,7 +159,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v7.0.1...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v7.1.0...HEAD
+[7.1.0]: https://github.com/giantswarm/k8sclient/compare/v7.0.1...v7.1.0
 [7.0.1]: https://github.com/giantswarm/k8sclient/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/giantswarm/k8sclient/compare/v6.1.0...v7.0.0
 [6.1.0]: https://github.com/giantswarm/k8sclient/compare/v6.0.0...v6.1.0
