@@ -5,8 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [Unreleased]
+
+## [7.2.0] - 2023-11-09
+
+### Changed
+
+- Upgrade go to 1.20
 
 ## [7.1.0] - 2023-10-24
 
@@ -159,7 +164,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v7.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v7.2.0...HEAD
+[7.2.0]: https://github.com/giantswarm/k8sclient/compare/v7.1.0...v7.2.0
 [7.1.0]: https://github.com/giantswarm/k8sclient/compare/v7.0.1...v7.1.0
 [7.0.1]: https://github.com/giantswarm/k8sclient/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/giantswarm/k8sclient/compare/v6.1.0...v7.0.0
