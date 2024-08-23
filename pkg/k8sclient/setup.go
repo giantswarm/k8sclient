@@ -62,7 +62,7 @@ func (s *Setup) EnsureNamespaceCreated(ctx context.Context, namespace string) er
 				return microerror.Mask(err)
 			}
 			if n.Status.Phase != v1.NamespaceActive {
-				return microerror.Maskf(unexpectedStatusPhaseError, string(n.Status.Phase))
+				return microerror.Maskf(unexpectedStatusPhaseError, "%s", string(n.Status.Phase))
 			}
 		}
 

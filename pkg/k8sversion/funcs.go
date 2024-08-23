@@ -100,7 +100,7 @@ func Less(a string, b string) (bool, error) {
 func parseSemver(v string) (major int, minor int, patch int, err error) {
 	submatches := kubeVersionRegex.FindStringSubmatch(v)
 	if len(submatches) != 4 {
-		return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, v)
+		return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, "%s", v)
 	}
 
 	switch submatches[2] {
@@ -111,17 +111,17 @@ func parseSemver(v string) (major int, minor int, patch int, err error) {
 	case "":
 		minor = versionTypeGA
 	default:
-		return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, v)
+		return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, "%s", v)
 	}
 
 	major, err = strconv.Atoi(submatches[1])
 	if err != nil {
-		return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, v)
+		return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, "%s", v)
 	}
 	if minor != versionTypeGA {
 		patch, err = strconv.Atoi(submatches[3])
 		if err != nil {
-			return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, v)
+			return 0, 0, 0, microerror.Maskf(invalidKubeVersionError, "%s", v)
 		}
 	}
 
