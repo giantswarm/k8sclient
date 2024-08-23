@@ -166,7 +166,7 @@ func (c *CRDClient) validateStatus(ctx context.Context, crd *apiextensionsv1.Cus
 		{
 			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1.NamesAccepted)
 			if ok && statusConditionFalse(con) {
-				return backoff.Permanent(microerror.Maskf(nameConflictError, con.Message))
+				return backoff.Permanent(microerror.Maskf(nameConflictError, "%s", con.Message))
 			}
 		}
 		// In case the CRD is non-structural we have to stop processing here and
@@ -175,7 +175,7 @@ func (c *CRDClient) validateStatus(ctx context.Context, crd *apiextensionsv1.Cus
 		{
 			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1.NonStructuralSchema)
 			if ok && statusConditionTrue(con) {
-				return backoff.Permanent(microerror.Maskf(notEstablishedError, con.Message))
+				return backoff.Permanent(microerror.Maskf(notEstablishedError, "%s", con.Message))
 			}
 		}
 		// In case the CRD is not yet established we have to retry and only return a
@@ -183,7 +183,7 @@ func (c *CRDClient) validateStatus(ctx context.Context, crd *apiextensionsv1.Cus
 		{
 			con, ok := statusCondition(manifest.Status.Conditions, apiextensionsv1.Established)
 			if ok && statusConditionFalse(con) {
-				return microerror.Maskf(notEstablishedError, con.Message)
+				return microerror.Maskf(notEstablishedError, "%s", con.Message)
 			}
 		}
 
