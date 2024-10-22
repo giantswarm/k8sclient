@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.0.0] - 2024-10-22
 
+### Changed
+
+- Upgrade controller-runtime to v0.19.0
+- Update go to v1.22.6
+- Upgrade k8s modules to v0.31.1
+
 ## [7.2.0] - 2023-11-09
 
 ### Changed
