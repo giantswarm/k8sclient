@@ -1,4 +1,4 @@
-module github.com/giantswarm/k8sclient/v7
+module github.com/giantswarm/k8sclient/v8
 
 go 1.22.0
 
