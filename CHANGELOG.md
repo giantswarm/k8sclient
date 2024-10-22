@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0] - 2024-10-22
+
 ## [7.2.0] - 2023-11-09
 
 ### Changed
@@ -164,7 +166,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v7.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/k8sclient/compare/v8.0.0...HEAD
+[8.0.0]: https://github.com/giantswarm/k8sclient/compare/v7.2.0...v8.0.0
 [7.2.0]: https://github.com/giantswarm/k8sclient/compare/v7.1.0...v7.2.0
 [7.1.0]: https://github.com/giantswarm/k8sclient/compare/v7.0.1...v7.1.0
 [7.0.1]: https://github.com/giantswarm/k8sclient/compare/v7.0.0...v7.0.1
