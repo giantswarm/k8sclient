@@ -1,2 +1,2 @@
-# No newer version of `pkg:golang/k8s.io/apiserver` released with the fix
-CVE-2020-8561 until=2023-12-31
+# pkg:golang/golang.org/x/net@v0.30.0
+CVE-2024-45338
