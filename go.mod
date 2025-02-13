@@ -10,7 +10,7 @@ require (
 	github.com/giantswarm/micrologger v1.1.2
 	github.com/google/go-cmp v0.6.0
 	k8s.io/api v0.32.2
-	k8s.io/apiextensions-apiserver v0.32.1
+	k8s.io/apiextensions-apiserver v0.32.2
 	k8s.io/apimachinery v0.32.2
 	k8s.io/client-go v0.32.2
 	sigs.k8s.io/controller-runtime v0.20.1
