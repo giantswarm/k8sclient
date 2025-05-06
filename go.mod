@@ -2,7 +2,7 @@ module github.com/giantswarm/k8sclient/v8
 
 go 1.24.0
 
-toolchain go1.24.2
+toolchain go1.24.3
 
 require (
 	github.com/giantswarm/backoff v1.0.1
