@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Go: Update dependencies.
+- Update k8s modules to v0.34.1 (#390)
+- Update module github.com/spf13/viper to v1.21.0 (#389)
+- Update module sigs.k8s.io/controller-runtime to v0.22.1 (#388)
+- Update module k8s.io/apiextensions-apiserver to v0.33.2 (#372)
+- Update dependency go to v1.24.3 (#362)
+- Bump golang.org/x/net from 0.36.0 to 0.38.0 (#355)
+- Update module github.com/google/go-cmp to v0.7.0 (#343)
+- Update module github.com/giantswarm/micrologger to v1.1.2 (#330)
 
 ## [8.0.0] - 2024-10-22
 
