@@ -1,13 +1,14 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@9.2.0
+  architect: giantswarm/architect@9.3.1
 
 workflows:
   test:
     jobs:
       - architect/go-test:
           name: go-test
+          context: architect
           filters:
             # Trigger job also on git tag.
             tags:
