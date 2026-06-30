@@ -3,7 +3,7 @@ package k8scrdclient
 import (
 	"context"
 
-	"github.com/giantswarm/backoff"
+	"github.com/giantswarm/backoff/v2"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )
 
