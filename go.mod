@@ -67,3 +67,5 @@ require (
 )
 
 replace go.opentelemetry.io/otel/sdk v1.40.0 => go.opentelemetry.io/otel/sdk v1.44.0
+
+replace golang.org/x/crypto v0.53.0 => golang.org/x/crypto v0.55.0
